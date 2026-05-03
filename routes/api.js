@@ -2,34 +2,22 @@ const express = require('express');
 const router = express.Router();
 const Datastore = require('nedb-promises');
 const multer = require('multer');
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'public/uploads/');
-  },
-  filename: function (req, file, cb) {
-    const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    cb(null, unique + path.extname(file.originalname));
-  }
-});
-
-const upload = multer({
-  storage: storage,
-  limits: { fileSize: 500 * 1024 * 1024 }  // 500MB
-});
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 
-// ── Database files (saved in your project folder) ──
+// ── Database files ──
 const Project = Datastore.create({ filename: 'data/projects.db', autoload: true });
 const Clip = Datastore.create({ filename: 'data/clips.db', autoload: true });
 
-// ── File Upload Setup ──
+// ── File Upload Setup (single declaration) ──
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, 'public/uploads/'),
   filename: (req, file, cb) => cb(null, uuidv4() + path.extname(file.originalname))
 });
-const upload = multer({ storage });
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 500 * 1024 * 1024 }  // 500MB
+});
 
 // ════════════════════════════════
 //   PROJECT ROUTES (CRUD)
@@ -116,7 +104,7 @@ router.get('/projects/:id/clips', async (req, res) => {
 // POST — add clip with video upload
 router.post('/projects/:id/clips', upload.single('video'), async (req, res) => {
   try {
-    const { name, startTime, endTime, notes } = req.body;
+    const { name, startTime, endTime, notes, rotation, filter, textOverlay } = req.body;
 
     const clip = await Clip.insert({
       projectId: req.params.id,
@@ -125,6 +113,9 @@ router.post('/projects/:id/clips', upload.single('video'), async (req, res) => {
       startTime: parseFloat(startTime) || 0,
       endTime: parseFloat(endTime) || 0,
       notes: notes || '',
+      rotation: rotation || 0,
+      filter: filter || 'none',
+      textOverlay: textOverlay || '{}',
       createdAt: new Date().toISOString()
     });
 
