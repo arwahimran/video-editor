@@ -43,8 +43,6 @@
       object-fit: contain;
       display: block;
     }
-
-    /* ── CANVAS OVERLAY ── */
     #overlayCanvas {
       position: absolute;
       top: 0; left: 0;
@@ -177,15 +175,7 @@
     .tool-panel.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* ── PANEL LABELS ── */
-    .panel-label {
-      font-size: 0.75rem;
-      color: #666;
-      font-weight: 600;
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
+    .panel-label { font-size: 0.75rem; color: #666; font-weight: 600; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
 
     /* ── SLIDERS ── */
     .tool-slider { width: 100%; accent-color: #00a835; cursor: pointer; }
@@ -200,38 +190,20 @@
       gap: 10px;
     }
     .filter-btn {
-      background: #222;
-      border: 2px solid #333;
-      border-radius: 10px;
-      padding: 10px 6px;
-      color: #aaa;
-      font-size: 0.72rem;
-      font-weight: 600;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.2s;
+      background: #222; border: 2px solid #333; border-radius: 10px;
+      padding: 10px 6px; color: #aaa; font-size: 0.72rem; font-weight: 600;
+      cursor: pointer; text-align: center; transition: all 0.2s;
     }
     .filter-btn .filter-icon { font-size: 1.4rem; display: block; margin-bottom: 4px; }
     .filter-btn:hover, .filter-btn.active { border-color: #00a835; color: #00a835; background: rgba(0,168,53,0.1); }
 
-    /* ── ROTATE BUTTONS ── */
+    /* ── ROTATE ── */
     .rotate-grid { display: flex; gap: 10px; flex-wrap: wrap; }
     .rotate-btn {
-      background: #222;
-      border: 2px solid #333;
-      border-radius: 12px;
-      padding: 12px 16px;
-      color: #aaa;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.2s;
-      flex: 1;
-      min-width: 80px;
+      background: #222; border: 2px solid #333; border-radius: 12px;
+      padding: 12px 16px; color: #aaa; font-size: 0.8rem; font-weight: 600;
+      cursor: pointer; display: flex; flex-direction: column; align-items: center;
+      gap: 6px; transition: all 0.2s; flex: 1; min-width: 80px;
     }
     .rotate-btn .r-icon { font-size: 1.5rem; }
     .rotate-btn:hover { border-color: #00a835; color: #00a835; background: rgba(0,168,53,0.1); }
@@ -240,15 +212,9 @@
     .text-controls { display: flex; flex-direction: column; gap: 12px; }
     .text-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
     .text-input {
-      background: #222;
-      border: 1px solid #333;
-      border-radius: 8px;
-      color: #fff;
-      padding: 10px 14px;
-      font-size: 0.9rem;
-      width: 100%;
-      outline: none;
-      transition: border-color 0.2s;
+      background: #222; border: 1px solid #333; border-radius: 8px;
+      color: #fff; padding: 10px 14px; font-size: 0.9rem; width: 100%;
+      outline: none; transition: border-color 0.2s;
     }
     .text-input:focus { border-color: #00a835; }
     .color-pick { width: 40px; height: 40px; border: none; border-radius: 8px; cursor: pointer; padding: 2px; background: #222; }
@@ -285,30 +251,46 @@
     .save-input:focus { border-color: #00a835; }
     .save-btn {
       background: linear-gradient(135deg,#00a835,#008a2a);
-      color: #fff; border: none; border-radius: 10px; padding: 12px;
-      font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: all 0.2s;
+      color: #fff; border: none; border-radius: 10px; padding: 14px;
+      font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.2s;
       box-shadow: 0 4px 15px rgba(0,168,53,0.3);
     }
-    .save-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(0,168,53,0.4); }
+    .save-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(0,168,53,0.4); }
+    .save-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-    /* ── CLIPS SIDEBAR ── */
-    .clips-sidebar {
+    /* ── EXPORT PROGRESS ── */
+    .export-progress {
+      display: none;
       background: #1a1a1a;
-      border-top: 2px solid #2a2a2a;
-      padding: 16px;
-    }
-    .clips-sidebar h6 { font-size: 0.85rem; font-weight: 700; color: #aaa; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .clip-card {
-      background: #222;
       border: 1px solid #2a2a2a;
       border-radius: 10px;
-      padding: 12px;
-      margin-bottom: 8px;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      padding: 14px;
+    }
+    .export-progress.show { display: block; }
+    .progress-bar-wrap {
+      background: #2a2a2a;
+      border-radius: 6px;
+      height: 8px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      background: linear-gradient(90deg, #00a835, #00cc50);
+      height: 100%;
+      border-radius: 6px;
+      transition: width 0.3s;
+      width: 0%;
+    }
+    .progress-label { font-size: 0.82rem; color: #aaa; margin-bottom: 4px; }
+    .progress-pct { font-size: 0.82rem; color: #00a835; font-weight: 700; float: right; }
+
+    /* ── CLIPS SIDEBAR ── */
+    .clips-sidebar { background: #1a1a1a; border-top: 2px solid #2a2a2a; padding: 16px; }
+    .clips-sidebar h6 { font-size: 0.85rem; font-weight: 700; color: #aaa; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .clip-card {
+      background: #222; border: 1px solid #2a2a2a; border-radius: 10px;
+      padding: 12px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; gap: 10px;
     }
     .clip-card:hover { border-color: #00a835; background: rgba(0,168,53,0.08); }
     .clip-card.active-clip { border-color: #00a835; background: rgba(0,168,53,0.12); }
@@ -341,13 +323,8 @@
 
     /* ── UPLOAD ZONE ── */
     .upload-zone {
-      border: 2px dashed #333;
-      border-radius: 12px;
-      padding: 30px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s;
-      color: #555;
+      border: 2px dashed #333; border-radius: 12px; padding: 30px;
+      text-align: center; cursor: pointer; transition: all 0.2s; color: #555;
     }
     .upload-zone:hover { border-color: #00a835; color: #00a835; background: rgba(0,168,53,0.05); }
     .upload-zone .uz-icon { font-size: 2.5rem; margin-bottom: 10px; }
@@ -392,7 +369,7 @@
       <div style="font-size:0.8rem;">MP4, WebM, MOV supported</div>
       <input type="file" id="videoUpload" accept="video/*" style="display:none"/>
     </div>
-    <video id="videoPlayer" style="display:none;" playsinline></video>
+    <video id="videoPlayer" style="display:none;" playsinline crossorigin="anonymous"></video>
     <canvas id="overlayCanvas"></canvas>
   </div>
 
@@ -554,23 +531,23 @@
     <div class="tool-panel" id="panel-text">
       <div class="panel-label">🔤 Add Text Overlay</div>
       <div class="text-controls">
-        <input type="text" class="text-input" id="textContent" placeholder="Type your text here..."/>
+        <input type="text" class="text-input" id="textContent" placeholder="Type your text here..." oninput="drawTextOverlay()"/>
         <div class="text-row">
           <div style="flex:1;">
             <div style="font-size:0.75rem; color:#666; margin-bottom:6px;">Font Size</div>
-            <input type="number" class="font-size-input" id="textSize" value="36" min="12" max="120"/>
+            <input type="number" class="font-size-input" id="textSize" value="36" min="12" max="120" oninput="drawTextOverlay()"/>
           </div>
           <div>
             <div style="font-size:0.75rem; color:#666; margin-bottom:6px;">Text Color</div>
-            <input type="color" class="color-pick" id="textColor" value="#ffffff"/>
+            <input type="color" class="color-pick" id="textColor" value="#ffffff" oninput="drawTextOverlay()"/>
           </div>
           <div>
             <div style="font-size:0.75rem; color:#666; margin-bottom:6px;">Stroke Color</div>
-            <input type="color" class="color-pick" id="strokeColor" value="#000000"/>
+            <input type="color" class="color-pick" id="strokeColor" value="#000000" oninput="drawTextOverlay()"/>
           </div>
           <div style="flex:1;">
             <div style="font-size:0.75rem; color:#666; margin-bottom:6px;">Stroke Size</div>
-            <input type="number" class="font-size-input" id="strokeSize" value="2" min="0" max="20"/>
+            <input type="number" class="font-size-input" id="strokeSize" value="2" min="0" max="20" oninput="drawTextOverlay()"/>
           </div>
         </div>
         <div class="slider-row">
@@ -584,7 +561,6 @@
           <span class="slider-val" id="textYVal">85%</span>
         </div>
         <div style="display:flex; gap:10px;">
-          <button class="ctrl-btn" style="flex:1;" onclick="drawTextOverlay()">👁 Preview Text</button>
           <button class="ctrl-btn" style="flex:1; color:#ff5555;" onclick="clearText()">✕ Clear Text</button>
         </div>
       </div>
@@ -618,11 +594,31 @@
 
     <!-- SAVE -->
     <div class="tool-panel" id="panel-save">
-      <div class="panel-label">💾 Save Clip</div>
+      <div class="panel-label">💾 Export & Save Clip</div>
       <div class="save-form">
         <input type="text" class="save-input" id="clipName" placeholder="Clip name e.g. Opening Scene"/>
         <textarea class="save-input" id="clipNotes" rows="2" placeholder="Add notes..."></textarea>
-        <button class="save-btn" onclick="saveClip()">💾 Save Clip to Project</button>
+
+        <!-- Export Progress -->
+        <div class="export-progress" id="exportProgress">
+          <div class="progress-label">
+            <span id="progressText">Preparing export...</span>
+            <span class="progress-pct" id="progressPct">0%</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" id="progressBarFill"></div>
+          </div>
+          <div style="font-size:0.75rem; color:#555; margin-top:8px;">
+            ⏺ Recording clip in real-time — please wait
+          </div>
+        </div>
+
+        <button class="save-btn" id="saveBtn" onclick="saveClip()">
+          💾 Export & Save Clip
+        </button>
+        <div style="font-size:0.75rem; color:#555; text-align:center;">
+          Export records your trim + effects in real-time into a .webm file
+        </div>
       </div>
     </div>
 
@@ -646,9 +642,8 @@ let rotation = 0;
 let scaleX = 1, scaleY = 1;
 let currentFilter = 'none';
 let trimStartSec = 0, trimEndSec = 0;
-let isDraggingStart = false, isDraggingEnd = false;
 let textOverlay = { text:'', x:50, y:85, size:36, color:'#ffffff', stroke:'#000000', strokeSize:2 };
-let currentClipVideo = null;
+let isExporting = false;
 
 const video = document.getElementById('videoPlayer');
 const canvas = document.getElementById('overlayCanvas');
@@ -675,8 +670,7 @@ window.onload = () => {
 document.getElementById('videoUpload').addEventListener('change', function() {
   const file = this.files[0];
   if (!file) return;
-  const url = URL.createObjectURL(file);
-  video.src = url;
+  video.src = URL.createObjectURL(file);
   video.style.display = 'block';
   document.getElementById('uploadZone').style.display = 'none';
   document.getElementById('timelineArea').style.display = 'block';
@@ -687,7 +681,7 @@ document.getElementById('videoUpload').addEventListener('change', function() {
   video.onloadedmetadata = () => {
     trimStartSec = 0;
     trimEndSec = video.duration;
-    document.getElementById('trimStartInput').value = 0;
+    document.getElementById('trimStartInput').value = '0';
     document.getElementById('trimEndInput').value = video.duration.toFixed(1);
     document.getElementById('totalTimeDisplay').textContent = formatTime(video.duration);
     updateTrimHandles();
@@ -715,7 +709,6 @@ function togglePlay() {
   }
 }
 video.addEventListener('ended', () => { document.getElementById('playBtn').textContent = '▶'; });
-
 function skipTime(s) { video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + s)); }
 
 // ── TIMELINE ──
@@ -725,21 +718,18 @@ function updateTimeline() {
   document.getElementById('timelineProgress').style.width = pct + '%';
   document.getElementById('currentTimeDisplay').textContent = formatTime(video.currentTime);
 }
-
 document.getElementById('timelineTrack').addEventListener('click', function(e) {
   const rect = this.getBoundingClientRect();
   const pct = (e.clientX - rect.left) / rect.width;
   video.currentTime = pct * video.duration;
 });
 
-// ── TRIM HANDLES DRAG ──
+// ── TRIM HANDLES ──
 function setupTrimDrag(el, isStart) {
   el.addEventListener('mousedown', startDrag);
   el.addEventListener('touchstart', startDrag, {passive: true});
-
   function startDrag(e) {
     e.stopPropagation();
-    if (isStart) isDraggingStart = true; else isDraggingEnd = true;
     document.addEventListener('mousemove', onDrag);
     document.addEventListener('touchmove', onDrag, {passive: true});
     document.addEventListener('mouseup', stopDrag);
@@ -761,7 +751,6 @@ function setupTrimDrag(el, isStart) {
     updateTrimHandles();
   }
   function stopDrag() {
-    isDraggingStart = false; isDraggingEnd = false;
     document.removeEventListener('mousemove', onDrag);
     document.removeEventListener('touchmove', onDrag);
     document.removeEventListener('mouseup', stopDrag);
@@ -781,13 +770,11 @@ function updateTrimHandles() {
   document.getElementById('trimRegion').style.width = (endPct - startPct) + '%';
   document.getElementById('trimInfo').textContent = `${formatTime(trimStartSec)} → ${formatTime(trimEndSec)}`;
 }
-
 function updateTrimFromInput() {
   trimStartSec = parseFloat(document.getElementById('trimStartInput').value) || 0;
   trimEndSec = parseFloat(document.getElementById('trimEndInput').value) || video.duration;
   updateTrimHandles();
 }
-
 function setTrimStart() {
   trimStartSec = video.currentTime;
   document.getElementById('trimStartInput').value = trimStartSec.toFixed(1);
@@ -805,7 +792,11 @@ function previewTrim() {
   video.play();
   document.getElementById('playBtn').textContent = '⏸';
   const stop = setInterval(() => {
-    if (video.currentTime >= trimEndSec) { video.pause(); document.getElementById('playBtn').textContent = '▶'; clearInterval(stop); }
+    if (video.currentTime >= trimEndSec) {
+      video.pause();
+      document.getElementById('playBtn').textContent = '▶';
+      clearInterval(stop);
+    }
   }, 100);
 }
 
@@ -846,8 +837,7 @@ function rotateVideo(deg) {
   document.getElementById('rotationDisplay').textContent = rotation + '°';
 }
 function flipVideo(axis) {
-  if (axis === 'h') scaleX *= -1;
-  else scaleY *= -1;
+  if (axis === 'h') scaleX *= -1; else scaleY *= -1;
   applyTransform();
 }
 function resetTransform() {
@@ -884,19 +874,15 @@ function drawTextOverlay() {
   const yPct = document.getElementById('textY').value;
   document.getElementById('textXVal').textContent = xPct + '%';
   document.getElementById('textYVal').textContent = yPct + '%';
-
   canvas.width = video.offsetWidth || 300;
   canvas.height = video.offsetHeight || 200;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
   if (!text) return;
   const x = (xPct / 100) * canvas.width;
   const y = (yPct / 100) * canvas.height;
-
   ctx.font = `bold ${size}px Inter, sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-
   if (strokeSz > 0) {
     ctx.strokeStyle = stroke;
     ctx.lineWidth = strokeSz * 2;
@@ -904,50 +890,188 @@ function drawTextOverlay() {
   }
   ctx.fillStyle = color;
   ctx.fillText(text, x, y);
-
   textOverlay = { text, x: xPct, y: yPct, size, color, stroke, strokeSize: strokeSz };
 }
 function clearText() {
   document.getElementById('textContent').value = '';
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  textOverlay = { text:'', x:50, y:85, size:36, color:'#ffffff', stroke:'#000000', strokeSize:2 };
 }
 
-// ── SAVE CLIP ──
+// ── EXPORT PROGRESS UI ──
+function setProgress(pct, label) {
+  document.getElementById('progressPct').textContent = pct + '%';
+  document.getElementById('progressBarFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = label;
+}
+
+// ── EXPORT & SAVE CLIP ──
 function saveClip() {
   if (!projectId) { showAlert('No project selected!', 'error'); return; }
+  if (isExporting) { showAlert('Already exporting, please wait...', 'error'); return; }
+
   const name = document.getElementById('clipName').value.trim() || 'Untitled Clip';
   const notes = document.getElementById('clipNotes').value;
   const videoFile = document.getElementById('videoUpload').files[0];
+
   if (!videoFile) { showAlert('Please upload a video first!', 'error'); return; }
+  if (trimEndSec <= trimStartSec) { showAlert('Set valid trim points first!', 'error'); return; }
 
-  const formData = new FormData();
-  formData.append('name', name);
-  formData.append('startTime', trimStartSec.toFixed(1));
-  formData.append('endTime', trimEndSec.toFixed(1));
-  formData.append('notes', notes);
-  formData.append('rotation', rotation);
-  formData.append('filter', currentFilter);
-  formData.append('textOverlay', JSON.stringify(textOverlay));
-  formData.append('video', videoFile);
+  isExporting = true;
+  const saveBtn = document.getElementById('saveBtn');
+  saveBtn.disabled = true;
+  saveBtn.textContent = '⏳ Exporting...';
+  document.getElementById('exportProgress').classList.add('show');
+  setProgress(0, 'Seeking to start point...');
 
-  showAlert('Saving clip...', 'success');
+  // Build export canvas at video's native resolution
+  const exportCanvas = document.createElement('canvas');
+  exportCanvas.width = video.videoWidth || 1280;
+  exportCanvas.height = video.videoHeight || 720;
+  const ectx = exportCanvas.getContext('2d');
 
-  fetch(`/api/projects/${projectId}/clips`, { method: 'POST', body: formData })
-    .then(r => r.json())
-    .then(res => {
-      if (res.success) {
-        showAlert('✅ Clip saved!', 'success');
-        document.getElementById('clipName').value = '';
-        document.getElementById('clipNotes').value = '';
-        loadClips();
-      } else {
-        showAlert('❌ Save failed!', 'error');
+  // Parse current filter values for canvas rendering
+  const brightness = document.getElementById('brightness').value / 100;
+  const contrast = document.getElementById('contrast').value / 100;
+  const saturation = document.getElementById('saturation').value / 100;
+
+  video.currentTime = trimStartSec;
+
+  video.onseeked = () => {
+    video.onseeked = null;
+    setProgress(5, 'Starting recorder...');
+
+    const chunks = [];
+    const stream = exportCanvas.captureStream(30);
+
+    // Try to capture audio
+    try {
+      const dest = video.captureStream ? video.captureStream() : null;
+      if (dest) dest.getAudioTracks().forEach(t => stream.addTrack(t));
+    } catch(e) {}
+
+    const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
+      ? 'video/webm;codecs=vp9'
+      : MediaRecorder.isTypeSupported('video/webm')
+      ? 'video/webm'
+      : 'video/mp4';
+
+    let recorder;
+    try {
+      recorder = new MediaRecorder(stream, { mimeType });
+    } catch(e) {
+      recorder = new MediaRecorder(stream);
+    }
+
+    recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+
+    recorder.onstop = () => {
+      setProgress(90, 'Preparing file for upload...');
+      const blob = new Blob(chunks, { type: 'video/webm' });
+      const safeName = name.replace(/[^a-zA-Z0-9\-_]/g, '-');
+      const exportedFile = new File([blob], safeName + '.webm', { type: 'video/webm' });
+
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('startTime', '0');
+      formData.append('endTime', (trimEndSec - trimStartSec).toFixed(1));
+      formData.append('notes', notes);
+      formData.append('rotation', rotation);
+      formData.append('filter', currentFilter);
+      formData.append('textOverlay', JSON.stringify(textOverlay));
+      formData.append('video', exportedFile);
+
+      setProgress(95, 'Uploading to server...');
+
+      fetch(`/api/projects/${projectId}/clips`, { method: 'POST', body: formData })
+        .then(r => r.json())
+        .then(res => {
+          isExporting = false;
+          saveBtn.disabled = false;
+          saveBtn.textContent = '💾 Export & Save Clip';
+          document.getElementById('exportProgress').classList.remove('show');
+          setProgress(0, '');
+          if (res.success) {
+            showAlert('✅ Clip exported and saved!', 'success');
+            document.getElementById('clipName').value = '';
+            document.getElementById('clipNotes').value = '';
+            video.pause();
+            document.getElementById('playBtn').textContent = '▶';
+            loadClips();
+          } else {
+            showAlert('❌ Upload failed — check server', 'error');
+          }
+        })
+        .catch(() => {
+          isExporting = false;
+          saveBtn.disabled = false;
+          saveBtn.textContent = '💾 Export & Save Clip';
+          document.getElementById('exportProgress').classList.remove('show');
+          showAlert('❌ Upload failed', 'error');
+        });
+    };
+
+    // Draw every frame to export canvas including rotation + text
+    let rafId;
+    const clipDuration = trimEndSec - trimStartSec;
+
+    function drawExportFrame() {
+      ectx.save();
+      ectx.clearRect(0, 0, exportCanvas.width, exportCanvas.height);
+
+      // Rotation + flip
+      ectx.translate(exportCanvas.width / 2, exportCanvas.height / 2);
+      ectx.rotate((rotation * Math.PI) / 180);
+      ectx.scale(scaleX, scaleY);
+      ectx.drawImage(video, -exportCanvas.width / 2, -exportCanvas.height / 2, exportCanvas.width, exportCanvas.height);
+      ectx.restore();
+
+      // Text overlay baked in
+      if (textOverlay.text) {
+        const x = (textOverlay.x / 100) * exportCanvas.width;
+        const y = (textOverlay.y / 100) * exportCanvas.height;
+        ectx.font = `bold ${textOverlay.size}px Inter, sans-serif`;
+        ectx.textAlign = 'center';
+        ectx.textBaseline = 'middle';
+        if (textOverlay.strokeSize > 0) {
+          ectx.strokeStyle = textOverlay.stroke;
+          ectx.lineWidth = textOverlay.strokeSize * 2;
+          ectx.strokeText(textOverlay.text, x, y);
+        }
+        ectx.fillStyle = textOverlay.color;
+        ectx.fillText(textOverlay.text, x, y);
       }
-    })
-    .catch(() => showAlert('❌ Save failed!', 'error'));
+
+      const elapsed = video.currentTime - trimStartSec;
+      const pct = Math.min(100, Math.round((elapsed / clipDuration) * 85) + 5);
+      setProgress(pct, `⏺ Recording... ${formatTime(elapsed)} / ${formatTime(clipDuration)}`);
+
+      if (video.currentTime < trimEndSec - 0.05 && !video.ended) {
+        rafId = requestAnimationFrame(drawExportFrame);
+      } else {
+        cancelAnimationFrame(rafId);
+        video.pause();
+        document.getElementById('playBtn').textContent = '▶';
+        setProgress(88, 'Finalizing recording...');
+        recorder.stop();
+      }
+    }
+
+    recorder.start(100);
+    video.play().then(() => {
+      document.getElementById('playBtn').textContent = '⏸';
+      rafId = requestAnimationFrame(drawExportFrame);
+    }).catch(err => {
+      showAlert('Could not play video for export: ' + err.message, 'error');
+      isExporting = false;
+      saveBtn.disabled = false;
+      saveBtn.textContent = '💾 Export & Save Clip';
+      document.getElementById('exportProgress').classList.remove('show');
+    });
+  };
 }
 
-// ── LOAD CLIPS ── (FIXED: now loads video when clicking clip)
+// ── LOAD CLIPS ──
 function loadClips() {
   if (!projectId) return;
   fetch(`/api/projects/${projectId}/clips`)
@@ -972,7 +1096,7 @@ function loadClips() {
     });
 }
 
-// ── LOAD CLIP INTO PLAYER (FIX for saved clips not opening) ──
+// ── LOAD CLIP INTO PLAYER ──
 function loadClip(id, videoFile, start, end) {
   document.querySelectorAll('.clip-card').forEach(c => c.classList.remove('active-clip'));
   const card = document.getElementById('clipcard-' + id);
@@ -998,6 +1122,7 @@ function loadClip(id, videoFile, start, end) {
       resizeCanvas();
       showAlert('✅ Clip loaded!', 'success');
     };
+    video.ontimeupdate = updateTimeline;
     video.load();
   } else {
     showAlert('No video file attached to this clip.', 'error');
@@ -1033,7 +1158,7 @@ function showAlert(msg, type) {
   el.className = 'editor-alert ' + type;
   el.style.display = 'block';
   clearTimeout(el._t);
-  el._t = setTimeout(() => { el.style.display = 'none'; }, 3000);
+  el._t = setTimeout(() => { el.style.display = 'none'; }, 3500);
 }
 </script>
 </body>
