@@ -2,6 +2,21 @@ const express = require('express');
 const router = express.Router();
 const Datastore = require('nedb-promises');
 const multer = require('multer');
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'public/uploads/');
+  },
+  filename: function (req, file, cb) {
+    const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, unique + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 500 * 1024 * 1024 }  // 500MB
+});
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 
