@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Projects — CutLab</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
@@ -14,23 +13,28 @@
 <nav class="navbar navbar-expand-lg">
   <div class="container">
     <a class="navbar-brand" href="index.html">✂ CutLab</a>
-    <div class="navbar-nav ms-auto flex-row gap-3">
-      <a class="nav-link" href="index.html">Home</a>
-      <a class="nav-link active" href="projects.html">Projects</a>
-      <a class="nav-link" href="editor.html">Editor</a>
-      <a class="nav-link" href="about.html">About</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <div class="navbar-nav ms-auto">
+        <a class="nav-link" href="index.html">Home</a>
+        <a class="nav-link active" href="projects.html">Projects</a>
+        <a class="nav-link" href="editor.html">Editor</a>
+        <a class="nav-link" href="about.html">About</a>
+      </div>
     </div>
   </div>
 </nav>
 
 <!-- PAGE HEADER -->
 <div class="page-header">
-  <div class="container d-flex justify-content-between align-items-center">
+  <div class="container d-flex justify-content-between align-items-center flex-wrap gap-3">
     <div>
       <h1>📁 My Projects</h1>
       <p>Create and manage your video editing projects</p>
     </div>
-    <button class="btn btn-red" data-bs-toggle="modal" data-bs-target="#newProjectModal">
+    <button class="btn-red" data-bs-toggle="modal" data-bs-target="#newProjectModal">
       + New Project
     </button>
   </div>
@@ -40,7 +44,7 @@
   <div id="alertBox"></div>
   <div id="projectsList">
     <div class="empty-state">
-      <h3>📁</h3>
+      <div class="empty-icon">📁</div>
       <p>No projects yet. Click "New Project" to start!</p>
     </div>
   </div>
@@ -48,13 +52,13 @@
 
 <!-- NEW PROJECT MODAL -->
 <div class="modal fade" id="newProjectModal" tabindex="-1">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Create New Project</h5>
+        <h5 class="modal-title">✨ Create New Project</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body p-4">
         <div class="mb-3">
           <label class="form-label">Project Title *</label>
           <input type="text" id="newTitle" class="form-control" placeholder="My Awesome Video"/>
@@ -77,7 +81,7 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button class="btn btn-red" onclick="createProject()">Create Project</button>
+        <button class="btn-red" onclick="createProject()">Create Project</button>
       </div>
     </div>
   </div>
@@ -85,13 +89,13 @@
 
 <!-- EDIT PROJECT MODAL -->
 <div class="modal fade" id="editProjectModal" tabindex="-1">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Edit Project</h5>
+        <h5 class="modal-title">✏ Edit Project</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body p-4">
         <input type="hidden" id="editId"/>
         <div class="mb-3">
           <label class="form-label">Project Title</label>
@@ -112,21 +116,25 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button class="btn btn-red" onclick="updateProject()">Save Changes</button>
+        <button class="btn-red" onclick="updateProject()">Save Changes</button>
       </div>
     </div>
   </div>
 </div>
 
 <footer class="site-footer">
-  <div class="container">✂ CutLab — Video Editing Tool | Node.js + Express</div>
+  <div class="container">✂ <strong>CutLab</strong> — Video Editing Tool | Node.js + Express</div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-
-// ── Load all projects when page opens ──
 window.onload = loadProjects;
+
+function getStatusClass(status) {
+  if (status === 'Completed') return 'status-completed';
+  if (status === 'On Hold') return 'status-hold';
+  return 'status-progress';
+}
 
 function loadProjects() {
   fetch('/api/projects')
@@ -134,35 +142,35 @@ function loadProjects() {
     .then(res => {
       const list = document.getElementById('projectsList');
       if (res.data.length === 0) {
-        list.innerHTML = `<div class="empty-state"><h3>📁</h3><p>No projects yet. Click "New Project" to start!</p></div>`;
+        list.innerHTML = `<div class="empty-state"><div class="empty-icon">📁</div><p>No projects yet. Click "New Project" to start!</p></div>`;
         return;
       }
       list.innerHTML = res.data.map(p => `
         <div class="project-card">
-          <div class="d-flex justify-content-between align-items-start">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
             <h5>${p.title}</h5>
-            <span class="badge">${p.genre}</span>
+            <div class="d-flex gap-2 flex-wrap">
+              <span class="badge-genre">${p.genre}</span>
+              <span class="status-badge ${getStatusClass(p.status)}">${p.status}</span>
+            </div>
           </div>
-          <div class="meta">📅 ${new Date(p.createdAt).toLocaleDateString()} &nbsp;|&nbsp; 🎬 ${p.clipCount} clips &nbsp;|&nbsp; ${p.status}</div>
-          <p style="color:#888; font-size:0.9rem">${p.description || 'No description'}</p>
+          <div class="meta">📅 ${new Date(p.createdAt).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'})} &nbsp;·&nbsp; 🎬 ${p.clipCount} clips</div>
+          <p class="description">${p.description || 'No description added.'}</p>
           <div class="actions">
-            <a href="editor.html?id=${p.id}" class="btn btn-red btn-sm">✂ Open Editor</a>
-            <button class="btn btn-outline-red btn-sm" onclick="openEdit('${p.id}','${p.title}','${p.status}','${p.description}')">✏ Edit</button>
-            <button class="btn btn-sm" style="border:1px solid #555; color:#ccc" onclick="deleteProject('${p.id}')">🗑 Delete</button>
+            <a href="editor.html?id=${p._id}" class="btn-red" style="font-size:0.85rem; padding:8px 16px;">✂ Open Editor</a>
+            <button class="btn-outline-red" style="font-size:0.85rem; padding:8px 16px;" onclick="openEdit('${p._id}','${p.title}','${p.status}','${(p.description||'').replace(/'/g,"\\'")}')">✏ Edit</button>
+            <button onclick="deleteProject('${p._id}')" style="background:#1a1a1a; border:1px solid #333; color:#888; padding:8px 16px; border-radius:10px; font-size:0.85rem; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.borderColor='#e50914';this.style.color='#e50914'" onmouseout="this.style.borderColor='#333';this.style.color='#888'">🗑 Delete</button>
           </div>
         </div>
       `).join('');
     });
 }
 
-// ── Create new project ──
 function createProject() {
   const title = document.getElementById('newTitle').value.trim();
   const genre = document.getElementById('newGenre').value;
   const description = document.getElementById('newDesc').value;
-
-  if (!title) { showAlert('Please enter a title!', 'danger'); return; }
-
+  if (!title) { showAlert('Please enter a project title!', 'danger'); return; }
   fetch('/api/projects', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -174,13 +182,12 @@ function createProject() {
       bootstrap.Modal.getInstance(document.getElementById('newProjectModal')).hide();
       document.getElementById('newTitle').value = '';
       document.getElementById('newDesc').value = '';
-      showAlert('✅ Project created!', 'success');
+      showAlert('✅ Project created successfully!', 'success');
       loadProjects();
     }
   });
 }
 
-// ── Open edit modal ──
 function openEdit(id, title, status, desc) {
   document.getElementById('editId').value = id;
   document.getElementById('editTitle').value = title;
@@ -189,13 +196,11 @@ function openEdit(id, title, status, desc) {
   new bootstrap.Modal(document.getElementById('editProjectModal')).show();
 }
 
-// ── Update project ──
 function updateProject() {
   const id = document.getElementById('editId').value;
   const title = document.getElementById('editTitle').value;
   const status = document.getElementById('editStatus').value;
   const description = document.getElementById('editDesc').value;
-
   fetch(`/api/projects/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
@@ -209,14 +214,12 @@ function updateProject() {
   });
 }
 
-// ── Delete project ──
 function deleteProject(id) {
   if (!confirm('Are you sure you want to delete this project?')) return;
   fetch(`/api/projects/${id}`, { method: 'DELETE' })
     .then(() => { showAlert('🗑 Project deleted!', 'danger'); loadProjects(); });
 }
 
-// ── Show alert message ──
 function showAlert(msg, type) {
   const box = document.getElementById('alertBox');
   box.innerHTML = `<div class="alert alert-${type} alert-dismissible">${msg}

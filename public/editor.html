@@ -9,96 +9,121 @@
 </head>
 <body>
 
+<!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg">
   <div class="container">
     <a class="navbar-brand" href="index.html">✂ CutLab</a>
-    <div class="navbar-nav ms-auto flex-row gap-3">
-      <a class="nav-link" href="index.html">Home</a>
-      <a class="nav-link" href="projects.html">Projects</a>
-      <a class="nav-link active" href="editor.html">Editor</a>
-      <a class="nav-link" href="about.html">About</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <div class="navbar-nav ms-auto">
+        <a class="nav-link" href="index.html">Home</a>
+        <a class="nav-link" href="projects.html">Projects</a>
+        <a class="nav-link active" href="editor.html">Editor</a>
+        <a class="nav-link" href="about.html">About</a>
+      </div>
     </div>
   </div>
 </nav>
 
+<!-- PAGE HEADER -->
 <div class="page-header">
   <div class="container">
     <h1>✂ Video Editor</h1>
-    <p id="projectName">Select a project or open from Projects page</p>
+    <p id="projectName">Open a project from the Projects page to start editing</p>
   </div>
 </div>
 
 <div class="container py-4">
   <div id="alertBox"></div>
-  <div class="row g-4">
 
-    <!-- LEFT: Video Player -->
-    <div class="col-lg-8">
-      <div class="card">
-        <h5 class="mb-3">🎬 Video Player</h5>
-        <!-- Upload Video -->
-        <div class="mb-3">
-          <label class="form-label">Upload Video File</label>
-          <input type="file" id="videoUpload" class="form-control" accept="video/*"/>
-        </div>
-        <video id="videoPlayer" controls>
-          <source src="" type="video/mp4"/>
-          Your browser does not support video.
-        </video>
-
-        <!-- Trim Controls -->
-        <div class="row mt-4 g-3">
-          <div class="col-6">
-            <label class="form-label">⏱ Start Time (seconds)</label>
-            <input type="number" id="startTime" class="form-control" value="0" min="0" step="0.1"/>
-          </div>
-          <div class="col-6">
-            <label class="form-label">⏱ End Time (seconds)</label>
-            <input type="number" id="endTime" class="form-control" value="0" min="0" step="0.1"/>
-          </div>
-        </div>
-
-        <!-- Helper Buttons -->
-        <div class="mt-3 d-flex gap-2 flex-wrap">
-          <button class="btn btn-outline-red btn-sm" onclick="setStart()">📍 Set Start = Current</button>
-          <button class="btn btn-outline-red btn-sm" onclick="setEnd()">🏁 Set End = Current</button>
-          <button class="btn btn-outline-red btn-sm" onclick="previewClip()">▶ Preview Clip</button>
-        </div>
-      </div>
-
-      <!-- Save Clip Form -->
-      <div class="card mt-4">
-        <h5 class="mb-3">💾 Save This Clip</h5>
-        <div class="mb-3">
-          <label class="form-label">Clip Name</label>
-          <input type="text" id="clipName" class="form-control" placeholder="e.g. Opening Scene"/>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Notes</label>
-          <textarea id="clipNotes" class="form-control" rows="2" placeholder="Add editing notes..."></textarea>
-        </div>
-        <button class="btn btn-red" onclick="saveClip()">💾 Save Clip to Project</button>
-      </div>
+  <!-- NO PROJECT WARNING -->
+  <div id="noProjectWarning" style="display:none;" class="mb-4">
+    <div class="card text-center py-5">
+      <div style="font-size:3rem; margin-bottom:16px;">📁</div>
+      <h5 style="font-weight:700; margin-bottom:8px;">No Project Selected</h5>
+      <p style="color:#666; margin-bottom:20px;">Please open a project from the Projects page first.</p>
+      <div><a href="projects.html" class="btn-red">Go to Projects</a></div>
     </div>
+  </div>
 
-    <!-- RIGHT: Clips List -->
-    <div class="col-lg-4">
-      <div class="card">
-        <h5 class="mb-3">🗂 Saved Clips</h5>
-        <div id="clipsList">
-          <div class="empty-state" style="padding:30px">
-            <h3>✂️</h3>
-            <p style="font-size:0.85rem">No clips saved yet</p>
+  <div id="editorContent" style="display:none;">
+    <div class="row g-4">
+
+      <!-- LEFT: Video Player -->
+      <div class="col-lg-8">
+
+        <!-- Upload -->
+        <div class="card mb-4">
+          <h5 style="font-weight:700; margin-bottom:16px;">🎬 Video Player</h5>
+          <div class="mb-3">
+            <label class="form-label">Upload Video File</label>
+            <input type="file" id="videoUpload" class="form-control" accept="video/*"/>
+          </div>
+          <video id="videoPlayer" controls>
+            <source src="" type="video/mp4"/>
+          </video>
+
+          <!-- Time Controls -->
+          <div class="row mt-4 g-3">
+            <div class="col-6">
+              <label class="form-label">⏱ Start Time (seconds)</label>
+              <input type="number" id="startTime" class="form-control" value="0" min="0" step="0.1"/>
+            </div>
+            <div class="col-6">
+              <label class="form-label">⏱ End Time (seconds)</label>
+              <input type="number" id="endTime" class="form-control" value="0" min="0" step="0.1"/>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <div class="mt-3 d-flex gap-2 flex-wrap">
+            <button class="btn-outline-red" style="font-size:0.85rem; padding:8px 16px;" onclick="setStart()">📍 Set Start</button>
+            <button class="btn-outline-red" style="font-size:0.85rem; padding:8px 16px;" onclick="setEnd()">🏁 Set End</button>
+            <button class="btn-outline-red" style="font-size:0.85rem; padding:8px 16px;" onclick="previewClip()">▶ Preview Clip</button>
+          </div>
+        </div>
+
+        <!-- Save Clip -->
+        <div class="card">
+          <h5 style="font-weight:700; margin-bottom:16px;">💾 Save This Clip</h5>
+          <div class="mb-3">
+            <label class="form-label">Clip Name</label>
+            <input type="text" id="clipName" class="form-control" placeholder="e.g. Opening Scene"/>
+          </div>
+          <div class="mb-4">
+            <label class="form-label">Notes</label>
+            <textarea id="clipNotes" class="form-control" rows="3" placeholder="Add editing notes..."></textarea>
+          </div>
+          <button class="btn-red" onclick="saveClip()" style="width:100%; justify-content:center;">
+            💾 Save Clip to Project
+          </button>
+        </div>
+      </div>
+
+      <!-- RIGHT: Clips List -->
+      <div class="col-lg-4">
+        <div class="card" style="position:sticky; top:80px;">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 style="font-weight:700; margin:0;">🗂 Saved Clips</h5>
+            <span id="clipCount" style="color:#666; font-size:0.85rem;">0 clips</span>
+          </div>
+          <div id="clipsList">
+            <div class="empty-state" style="padding:40px 20px;">
+              <div class="empty-icon">✂️</div>
+              <p>No clips saved yet</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
+    </div>
   </div>
 </div>
 
 <footer class="site-footer">
-  <div class="container">✂ CutLab — Video Editing Tool | Node.js + Express</div>
+  <div class="container">✂ <strong>CutLab</strong> — Video Editing Tool | Node.js + Express</div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -106,23 +131,28 @@
 const video = document.getElementById('videoPlayer');
 let projectId = null;
 
-// ── Get project ID from URL ──
 window.onload = () => {
   const params = new URLSearchParams(window.location.search);
   projectId = params.get('id');
-  if (projectId) {
-    fetch(`/api/projects/${projectId}`)
-      .then(r => r.json())
-      .then(res => {
-        if (res.success) {
-          document.getElementById('projectName').textContent = '📁 ' + res.data.title;
-          loadClips();
-        }
-      });
+
+  if (!projectId) {
+    document.getElementById('noProjectWarning').style.display = 'block';
+    return;
   }
+
+  document.getElementById('editorContent').style.display = 'block';
+
+  fetch(`/api/projects/${projectId}`)
+    .then(r => r.json())
+    .then(res => {
+      if (res.success) {
+        document.getElementById('projectName').textContent = '📁 ' + res.data.title;
+      }
+    });
+
+  loadClips();
 };
 
-// ── Load video from file input ──
 document.getElementById('videoUpload').addEventListener('change', function() {
   const file = this.files[0];
   if (file) {
@@ -131,17 +161,14 @@ document.getElementById('videoUpload').addEventListener('change', function() {
   }
 });
 
-// ── Set start time = current video time ──
 function setStart() {
   document.getElementById('startTime').value = video.currentTime.toFixed(1);
 }
 
-// ── Set end time = current video time ──
 function setEnd() {
   document.getElementById('endTime').value = video.currentTime.toFixed(1);
 }
 
-// ── Preview the clip between start and end ──
 function previewClip() {
   const start = parseFloat(document.getElementById('startTime').value);
   const end = parseFloat(document.getElementById('endTime').value);
@@ -153,16 +180,13 @@ function previewClip() {
   }, 200);
 }
 
-// ── Save clip to backend ──
 function saveClip() {
   if (!projectId) { showAlert('Please open a project first!', 'danger'); return; }
-
   const name = document.getElementById('clipName').value || 'Untitled Clip';
   const startTime = document.getElementById('startTime').value;
   const endTime = document.getElementById('endTime').value;
   const notes = document.getElementById('clipNotes').value;
   const videoFile = document.getElementById('videoUpload').files[0];
-
   if (!videoFile) { showAlert('Please upload a video first!', 'danger'); return; }
 
   const formData = new FormData();
@@ -176,7 +200,7 @@ function saveClip() {
     .then(r => r.json())
     .then(res => {
       if (res.success) {
-        showAlert('✅ Clip saved!', 'success');
+        showAlert('✅ Clip saved successfully!', 'success');
         document.getElementById('clipName').value = '';
         document.getElementById('clipNotes').value = '';
         loadClips();
@@ -184,37 +208,35 @@ function saveClip() {
     });
 }
 
-// ── Load clips list ──
 function loadClips() {
   if (!projectId) return;
   fetch(`/api/projects/${projectId}/clips`)
     .then(r => r.json())
     .then(res => {
       const list = document.getElementById('clipsList');
+      const count = document.getElementById('clipCount');
+      count.textContent = `${res.data.length} clip${res.data.length !== 1 ? 's' : ''}`;
       if (res.data.length === 0) {
-        list.innerHTML = `<div class="empty-state" style="padding:30px"><h3>✂️</h3><p style="font-size:0.85rem">No clips saved yet</p></div>`;
+        list.innerHTML = `<div class="empty-state" style="padding:40px 20px;"><div class="empty-icon">✂️</div><p>No clips saved yet</p></div>`;
         return;
       }
       list.innerHTML = res.data.map(c => `
         <div class="clip-item">
           <h6>${c.name}</h6>
-          <div class="clip-time">⏱ ${c.startTime}s → ${c.endTime}s</div>
+          <span class="clip-time">⏱ ${c.startTime}s → ${c.endTime}s</span>
           <div class="clip-notes">${c.notes || 'No notes'}</div>
-          <button class="btn btn-sm mt-2" style="border:1px solid #555; color:#ccc; font-size:0.75rem"
-            onclick="deleteClip('${c.id}')">🗑 Delete</button>
+          <button onclick="deleteClip('${c._id}')" style="margin-top:10px; background:transparent; border:1px solid #333; color:#666; padding:5px 12px; border-radius:8px; font-size:0.78rem; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.borderColor='#e50914';this.style.color='#e50914'" onmouseout="this.style.borderColor='#333';this.style.color='#666'">🗑 Delete</button>
         </div>
       `).join('');
     });
 }
 
-// ── Delete a clip ──
 function deleteClip(id) {
   if (!confirm('Delete this clip?')) return;
   fetch(`/api/clips/${id}`, { method: 'DELETE' })
     .then(() => { showAlert('Clip deleted!', 'danger'); loadClips(); });
 }
 
-// ── Alert helper ──
 function showAlert(msg, type) {
   const box = document.getElementById('alertBox');
   box.innerHTML = `<div class="alert alert-${type} alert-dismissible">${msg}

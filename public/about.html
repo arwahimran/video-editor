@@ -13,11 +13,16 @@
 <nav class="navbar navbar-expand-lg">
   <div class="container">
     <a class="navbar-brand" href="index.html">✂ CutLab</a>
-    <div class="navbar-nav ms-auto flex-row gap-3">
-      <a class="nav-link" href="index.html">Home</a>
-      <a class="nav-link" href="projects.html">Projects</a>
-      <a class="nav-link" href="editor.html">Editor</a>
-      <a class="nav-link active" href="about.html">About</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <div class="navbar-nav ms-auto">
+        <a class="nav-link" href="index.html">Home</a>
+        <a class="nav-link" href="projects.html">Projects</a>
+        <a class="nav-link" href="editor.html">Editor</a>
+        <a class="nav-link active" href="about.html">About</a>
+      </div>
     </div>
   </div>
 </nav>
@@ -32,153 +37,234 @@
 
 <div class="container py-5">
 
-  <!-- Project Info -->
+  <!-- What & Why -->
   <div class="row g-4 mb-5">
     <div class="col-md-6">
-      <div class="card p-4">
-        <h4 style="color:#e50914">🎬 What is CutLab?</h4>
-        <p style="color:#aaa; margin-top:12px">
+      <div class="card h-100 p-4">
+        <h4 style="color:#e50914; font-weight:800; margin-bottom:16px;">🎬 What is CutLab?</h4>
+        <p style="color:#777; line-height:1.8;">
           CutLab is a full-stack web-based video editing tool built with
           Node.js and Express. It allows users to create video editing
           projects, upload video files, trim clips by setting start and
           end times, add notes, and manage everything through a clean
-          and responsive interface.
+          and fully responsive interface.
         </p>
       </div>
     </div>
     <div class="col-md-6">
-      <div class="card p-4">
-        <h4 style="color:#e50914">🎯 Project Objective</h4>
-        <p style="color:#aaa; margin-top:12px">
+      <div class="card h-100 p-4">
+        <h4 style="color:#e50914; font-weight:800; margin-bottom:16px;">🎯 Project Objective</h4>
+        <p style="color:#777; line-height:1.8;">
           The objective of this project is to independently learn
           Node.js and Express and build a complete working website
-          with backend functionality, then deploy it online. This
-          project demonstrates full-stack development skills including
-          REST API design, file handling, and database integration.
+          with backend functionality. This project demonstrates
+          full-stack development skills including REST API design,
+          file handling, database integration and responsive UI design.
         </p>
       </div>
     </div>
   </div>
 
-  <!-- Technologies Used -->
-  <h3 class="text-center mb-4">🛠 Technologies Used</h3>
+  <!-- Tech Stack -->
+  <div class="text-center mb-4">
+    <h2 class="section-title">🛠 Technologies Used</h2>
+    <p class="section-subtitle">The tools and frameworks powering CutLab</p>
+  </div>
   <div class="row g-4 mb-5">
-    <div class="col-md-3 col-6">
-      <div class="card text-center p-4">
-        <div style="font-size:2.5rem">⚙️</div>
-        <h6 class="mt-3">Node.js</h6>
-        <p style="color:#888; font-size:0.85rem">Backend runtime environment</p>
+    <div class="col-lg-3 col-md-4 col-6">
+      <div class="feature-card">
+        <span class="feature-icon">⚙️</span>
+        <h5>Node.js</h5>
+        <p>Backend JavaScript runtime environment</p>
       </div>
     </div>
-    <div class="col-md-3 col-6">
-      <div class="card text-center p-4">
-        <div style="font-size:2.5rem">🚂</div>
-        <h6 class="mt-3">Express.js</h6>
-        <p style="color:#888; font-size:0.85rem">Web framework & REST API</p>
+    <div class="col-lg-3 col-md-4 col-6">
+      <div class="feature-card">
+        <span class="feature-icon">🚂</span>
+        <h5>Express.js</h5>
+        <p>Web framework & REST API routing</p>
       </div>
     </div>
-    <div class="col-md-3 col-6">
-      <div class="card text-center p-4">
-        <div style="font-size:2.5rem">🗄️</div>
-        <h6 class="mt-3">NeDB Database</h6>
-        <p style="color:#888; font-size:0.85rem">Lightweight file database</p>
+    <div class="col-lg-3 col-md-4 col-6">
+      <div class="feature-card">
+        <span class="feature-icon">🗄️</span>
+        <h5>NeDB</h5>
+        <p>Lightweight file-based database</p>
       </div>
     </div>
-    <div class="col-md-3 col-6">
-      <div class="card text-center p-4">
-        <div style="font-size:2.5rem">🎨</div>
-        <h6 class="mt-3">Bootstrap 5</h6>
-        <p style="color:#888; font-size:0.85rem">Responsive frontend design</p>
+    <div class="col-lg-3 col-md-4 col-6">
+      <div class="feature-card">
+        <span class="feature-icon">🎨</span>
+        <h5>Bootstrap 5</h5>
+        <p>Responsive frontend design system</p>
       </div>
     </div>
-    <div class="col-md-3 col-6">
-      <div class="card text-center p-4">
-        <div style="font-size:2.5rem">📤</div>
-        <h6 class="mt-3">Multer</h6>
-        <p style="color:#888; font-size:0.85rem">Video file upload handling</p>
+    <div class="col-lg-3 col-md-4 col-6">
+      <div class="feature-card">
+        <span class="feature-icon">📤</span>
+        <h5>Multer</h5>
+        <p>Video file upload middleware</p>
       </div>
     </div>
-    <div class="col-md-3 col-6">
-      <div class="card text-center p-4">
-        <div style="font-size:2.5rem">🔌</div>
-        <h6 class="mt-3">REST API</h6>
-        <p style="color:#888; font-size:0.85rem">Full CRUD operations</p>
+    <div class="col-lg-3 col-md-4 col-6">
+      <div class="feature-card">
+        <span class="feature-icon">🔌</span>
+        <h5>REST API</h5>
+        <p>Full CRUD operations via HTTP</p>
       </div>
     </div>
-    <div class="col-md-3 col-6">
-      <div class="card text-center p-4">
-        <div style="font-size:2.5rem">🌐</div>
-        <h6 class="mt-3">HTML/CSS/JS</h6>
-        <p style="color:#888; font-size:0.85rem">Frontend development</p>
+    <div class="col-lg-3 col-md-4 col-6">
+      <div class="feature-card">
+        <span class="feature-icon">🌐</span>
+        <h5>HTML/CSS/JS</h5>
+        <p>Core frontend development</p>
       </div>
     </div>
-    <div class="col-md-3 col-6">
-      <div class="card text-center p-4">
-        <div style="font-size:2.5rem">☁️</div>
-        <h6 class="mt-3">Render.com</h6>
-        <p style="color:#888; font-size:0.85rem">Free online deployment</p>
+    <div class="col-lg-3 col-md-4 col-6">
+      <div class="feature-card">
+        <span class="feature-icon">☁️</span>
+        <h5>Railway</h5>
+        <p>Free cloud deployment platform</p>
       </div>
     </div>
   </div>
 
   <!-- API Routes -->
-  <h3 class="text-center mb-4">🔌 API Routes Documentation</h3>
-  <div class="card p-4 mb-5">
-    <table class="table table-dark table-bordered">
+  <div class="text-center mb-4">
+    <h2 class="section-title">🔌 API Documentation</h2>
+    <p class="section-subtitle">All available REST API endpoints</p>
+  </div>
+  <div class="card p-4 mb-5" style="overflow-x:auto;">
+    <table class="table table-dark table-bordered mb-0">
       <thead>
-        <tr style="color:#e50914">
+        <tr>
           <th>Method</th>
           <th>Route</th>
           <th>Description</th>
         </tr>
       </thead>
-      <tbody style="color:#aaa">
-        <tr><td><span style="color:#4caf50">GET</span></td><td>/api/projects</td><td>Get all projects</td></tr>
-        <tr><td><span style="color:#4caf50">GET</span></td><td>/api/projects/:id</td><td>Get single project</td></tr>
-        <tr><td><span style="color:#2196f3">POST</span></td><td>/api/projects</td><td>Create new project</td></tr>
-        <tr><td><span style="color:#ff9800">PUT</span></td><td>/api/projects/:id</td><td>Update a project</td></tr>
-        <tr><td><span style="color:#e50914">DELETE</span></td><td>/api/projects/:id</td><td>Delete a project</td></tr>
-        <tr><td><span style="color:#4caf50">GET</span></td><td>/api/projects/:id/clips</td><td>Get clips for project</td></tr>
-        <tr><td><span style="color:#2196f3">POST</span></td><td>/api/projects/:id/clips</td><td>Add clip with video upload</td></tr>
-        <tr><td><span style="color:#e50914">DELETE</span></td><td>/api/clips/:id</td><td>Delete a clip</td></tr>
-        <tr><td><span style="color:#4caf50">GET</span></td><td>/api/health</td><td>API health check</td></tr>
+      <tbody style="color:#777;">
+        <tr>
+          <td><span style="color:#00c864; font-weight:700;">GET</span></td>
+          <td><code style="color:#aaa;">/api/projects</code></td>
+          <td>Get all projects</td>
+        </tr>
+        <tr>
+          <td><span style="color:#00c864; font-weight:700;">GET</span></td>
+          <td><code style="color:#aaa;">/api/projects/:id</code></td>
+          <td>Get single project</td>
+        </tr>
+        <tr>
+          <td><span style="color:#2196f3; font-weight:700;">POST</span></td>
+          <td><code style="color:#aaa;">/api/projects</code></td>
+          <td>Create new project</td>
+        </tr>
+        <tr>
+          <td><span style="color:#ffa500; font-weight:700;">PUT</span></td>
+          <td><code style="color:#aaa;">/api/projects/:id</code></td>
+          <td>Update a project</td>
+        </tr>
+        <tr>
+          <td><span style="color:#e50914; font-weight:700;">DELETE</span></td>
+          <td><code style="color:#aaa;">/api/projects/:id</code></td>
+          <td>Delete a project</td>
+        </tr>
+        <tr>
+          <td><span style="color:#00c864; font-weight:700;">GET</span></td>
+          <td><code style="color:#aaa;">/api/projects/:id/clips</code></td>
+          <td>Get clips for a project</td>
+        </tr>
+        <tr>
+          <td><span style="color:#2196f3; font-weight:700;">POST</span></td>
+          <td><code style="color:#aaa;">/api/projects/:id/clips</code></td>
+          <td>Add clip with video upload</td>
+        </tr>
+        <tr>
+          <td><span style="color:#e50914; font-weight:700;">DELETE</span></td>
+          <td><code style="color:#aaa;">/api/clips/:id</code></td>
+          <td>Delete a clip</td>
+        </tr>
+        <tr>
+          <td><span style="color:#00c864; font-weight:700;">GET</span></td>
+          <td><code style="color:#aaa;">/api/health</code></td>
+          <td>API health check</td>
+        </tr>
       </tbody>
     </table>
   </div>
 
-  <!-- Features -->
-  <h3 class="text-center mb-4">✅ Project Features</h3>
+  <!-- Features Checklist -->
+  <div class="text-center mb-4">
+    <h2 class="section-title">✅ Project Features</h2>
+    <p class="section-subtitle">Everything implemented in this project</p>
+  </div>
   <div class="card p-4 mb-5">
-    <div class="row">
+    <div class="row g-3">
       <div class="col-md-6">
-        <ul style="color:#aaa; line-height:2">
-          <li>✅ Home page with live API stats</li>
-          <li>✅ At least 3 functional pages</li>
-          <li>✅ Create, Read, Update, Delete projects</li>
-          <li>✅ Video file upload with Multer</li>
-        </ul>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div style="display:flex; align-items:center; gap:12px; color:#777;">
+            <span style="color:#00c864; font-size:1.2rem;">✅</span> Home page with live API stats
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; color:#777;">
+            <span style="color:#00c864; font-size:1.2rem;">✅</span> At least 3 functional pages
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; color:#777;">
+            <span style="color:#00c864; font-size:1.2rem;">✅</span> Create, Read, Update, Delete projects
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; color:#777;">
+            <span style="color:#00c864; font-size:1.2rem;">✅</span> Video file upload with Multer
+          </div>
+        </div>
       </div>
       <div class="col-md-6">
-        <ul style="color:#aaa; line-height:2">
-          <li>✅ Form submission with backend processing</li>
-          <li>✅ Data storage and retrieval via database</li>
-          <li>✅ Responsive design for all devices</li>
-          <li>✅ Live deployed link</li>
-        </ul>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div style="display:flex; align-items:center; gap:12px; color:#777;">
+            <span style="color:#00c864; font-size:1.2rem;">✅</span> Form submission with backend processing
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; color:#777;">
+            <span style="color:#00c864; font-size:1.2rem;">✅</span> Data storage via NeDB database
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; color:#777;">
+            <span style="color:#00c864; font-size:1.2rem;">✅</span> Fully responsive for mobile & desktop
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; color:#777;">
+            <span style="color:#00c864; font-size:1.2rem;">✅</span> Deployed live on Railway.app
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Developer Info -->
-  <div class="card p-4 text-center">
-    <h4 style="color:#e50914">👨‍💻 Developer</h4>
-    <p style="color:#aaa; margin-top:12px">
-      <strong style="color:#f0f0f0">Student Name:</strong> Imran Arwah<br/>
-      <strong style="color:#f0f0f0">University:</strong> PMAS Arid Agriculture University Rawalpindi<br/>
-      <strong style="color:#f0f0f0">Institute:</strong> University Institute of Information Technology<br/>
-      <strong style="color:#f0f0f0">Project:</strong> Full Stack Web Development — Video Editing Tool<br/>
-      <strong style="color:#f0f0f0">Tech Stack:</strong> Node.js, Express.js, NeDB, Bootstrap 5
-    </p>
+  <div class="card p-4 p-md-5 text-center">
+    <div style="font-size:3rem; margin-bottom:16px;">👨‍💻</div>
+    <h4 style="color:#e50914; font-weight:800; margin-bottom:20px;">Developer Info</h4>
+    <div class="row g-3 justify-content-center" style="max-width:500px; margin:0 auto;">
+      <div class="col-12">
+        <div style="background:#1a1a1a; border-radius:10px; padding:12px 20px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+          <span style="color:#555; font-size:0.85rem;">Student</span>
+          <span style="font-weight:600; font-size:0.95rem;">Imran Arwah</span>
+        </div>
+      </div>
+      <div class="col-12">
+        <div style="background:#1a1a1a; border-radius:10px; padding:12px 20px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+          <span style="color:#555; font-size:0.85rem;">University</span>
+          <span style="font-weight:600; font-size:0.95rem;">PMAS Arid Agriculture University</span>
+        </div>
+      </div>
+      <div class="col-12">
+        <div style="background:#1a1a1a; border-radius:10px; padding:12px 20px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+          <span style="color:#555; font-size:0.85rem;">Institute</span>
+          <span style="font-weight:600; font-size:0.95rem;">UIIT</span>
+        </div>
+      </div>
+      <div class="col-12">
+        <div style="background:#1a1a1a; border-radius:10px; padding:12px 20px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+          <span style="color:#555; font-size:0.85rem;">Tech Stack</span>
+          <span style="font-weight:600; font-size:0.95rem;">Node.js · Express · NeDB · Bootstrap</span>
+        </div>
+      </div>
+    </div>
   </div>
 
 </div>
