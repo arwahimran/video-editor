@@ -3,245 +3,1037 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Editor — CutLab</title>
+  <title>Editor — EditPro</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
   <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    body { background: #111; color: #fff; }
+
+    /* ── TOP BAR ── */
+    .editor-topbar {
+      background: #1a1a1a;
+      border-bottom: 1px solid #2a2a2a;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .editor-topbar .brand { font-size: 1.2rem; font-weight: 900; color: #00a835; display: flex; align-items: center; gap: 8px; }
+    .editor-topbar .brand .logo { width: 30px; height: 30px; background: linear-gradient(135deg,#00a835,#00cc50); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+    .project-title-bar { font-size: 0.9rem; color: #888; }
+
+    /* ── VIDEO AREA ── */
+    .video-area {
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      min-height: 300px;
+      max-height: 55vh;
+      overflow: hidden;
+    }
+    #videoPlayer {
+      max-width: 100%;
+      max-height: 55vh;
+      width: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* ── CANVAS OVERLAY ── */
+    #overlayCanvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+    }
+
+    /* ── TIMELINE ── */
+    .timeline-area {
+      background: #1a1a1a;
+      padding: 12px 16px;
+      border-top: 1px solid #2a2a2a;
+      border-bottom: 1px solid #2a2a2a;
+    }
+    .timeline-track {
+      background: #2a2a2a;
+      border-radius: 6px;
+      height: 40px;
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+    }
+    .timeline-progress {
+      background: rgba(0,168,53,0.3);
+      height: 100%;
+      border-radius: 6px;
+      transition: width 0.1s;
+      pointer-events: none;
+    }
+    .trim-start, .trim-end {
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 14px;
+      background: #00a835;
+      border-radius: 4px;
+      cursor: ew-resize;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      color: white;
+      z-index: 5;
+      user-select: none;
+    }
+    .trim-start { left: 0; border-radius: 4px 0 0 4px; }
+    .trim-end { right: 0; border-radius: 0 4px 4px 0; }
+    .trim-region {
+      position: absolute;
+      top: 0; bottom: 0;
+      background: rgba(0,168,53,0.15);
+      border-top: 2px solid #00a835;
+      border-bottom: 2px solid #00a835;
+      pointer-events: none;
+    }
+    .time-display {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: #666;
+      margin-top: 6px;
+    }
+
+    /* ── PLAYBACK CONTROLS ── */
+    .playback-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 10px;
+      background: #1a1a1a;
+    }
+    .play-btn {
+      width: 44px; height: 44px;
+      background: #00a835;
+      border: none;
+      border-radius: 50%;
+      color: white;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(0,168,53,0.4);
+    }
+    .play-btn:hover { transform: scale(1.1); background: #00cc50; }
+    .ctrl-btn {
+      background: #2a2a2a;
+      border: none;
+      border-radius: 8px;
+      color: #aaa;
+      padding: 8px 14px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .ctrl-btn:hover { background: #333; color: #fff; }
+
+    /* ── TOOL TABS ── */
+    .tool-tabs {
+      display: flex;
+      background: #1a1a1a;
+      border-top: 1px solid #2a2a2a;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tool-tabs::-webkit-scrollbar { display: none; }
+    .tool-tab {
+      flex: 0 0 auto;
+      padding: 14px 20px;
+      background: transparent;
+      border: none;
+      color: #666;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+      border-bottom: 3px solid transparent;
+      min-width: 70px;
+    }
+    .tool-tab .tab-icon { font-size: 1.4rem; }
+    .tool-tab:hover { color: #00a835; background: rgba(0,168,53,0.05); }
+    .tool-tab.active { color: #00a835; border-bottom-color: #00a835; background: rgba(0,168,53,0.08); }
+
+    /* ── TOOL PANELS ── */
+    .tool-panels { background: #151515; min-height: 180px; }
+    .tool-panel { display: none; padding: 16px; animation: fadeIn 0.2s ease; }
+    .tool-panel.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── PANEL LABELS ── */
+    .panel-label {
+      font-size: 0.75rem;
+      color: #666;
+      font-weight: 600;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── SLIDERS ── */
+    .tool-slider { width: 100%; accent-color: #00a835; cursor: pointer; }
+    .slider-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .slider-row label { font-size: 0.8rem; color: #888; min-width: 90px; }
+    .slider-val { font-size: 0.8rem; color: #00a835; font-weight: 700; min-width: 36px; text-align: right; }
+
+    /* ── FILTER GRID ── */
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+      gap: 10px;
+    }
+    .filter-btn {
+      background: #222;
+      border: 2px solid #333;
+      border-radius: 10px;
+      padding: 10px 6px;
+      color: #aaa;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .filter-btn .filter-icon { font-size: 1.4rem; display: block; margin-bottom: 4px; }
+    .filter-btn:hover, .filter-btn.active { border-color: #00a835; color: #00a835; background: rgba(0,168,53,0.1); }
+
+    /* ── ROTATE BUTTONS ── */
+    .rotate-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+    .rotate-btn {
+      background: #222;
+      border: 2px solid #333;
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: #aaa;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      flex: 1;
+      min-width: 80px;
+    }
+    .rotate-btn .r-icon { font-size: 1.5rem; }
+    .rotate-btn:hover { border-color: #00a835; color: #00a835; background: rgba(0,168,53,0.1); }
+
+    /* ── TEXT PANEL ── */
+    .text-controls { display: flex; flex-direction: column; gap: 12px; }
+    .text-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .text-input {
+      background: #222;
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: #fff;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .text-input:focus { border-color: #00a835; }
+    .color-pick { width: 40px; height: 40px; border: none; border-radius: 8px; cursor: pointer; padding: 2px; background: #222; }
+    .font-size-input {
+      background: #222; border: 1px solid #333; border-radius: 8px;
+      color: #fff; padding: 8px 10px; width: 70px; outline: none; font-size: 0.9rem;
+    }
+
+    /* ── TRIM PANEL ── */
+    .trim-inputs { display: flex; gap: 12px; flex-wrap: wrap; }
+    .trim-field { flex: 1; min-width: 120px; }
+    .trim-field label { font-size: 0.78rem; color: #666; display: block; margin-bottom: 6px; }
+    .trim-field input {
+      background: #222; border: 1px solid #333; border-radius: 8px;
+      color: #fff; padding: 10px 12px; width: 100%; outline: none; font-size: 0.9rem;
+    }
+    .trim-field input:focus { border-color: #00a835; }
+
+    /* ── CROP PANEL ── */
+    .crop-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+    .crop-btn {
+      background: #222; border: 2px solid #333; border-radius: 10px;
+      color: #aaa; font-size: 0.78rem; font-weight: 600; cursor: pointer;
+      padding: 10px 14px; transition: all 0.2s; text-align: center;
+    }
+    .crop-btn:hover, .crop-btn.active { border-color: #00a835; color: #00a835; background: rgba(0,168,53,0.1); }
+
+    /* ── SAVE PANEL ── */
+    .save-form { display: flex; flex-direction: column; gap: 12px; }
+    .save-input {
+      background: #222; border: 1px solid #333; border-radius: 8px;
+      color: #fff; padding: 10px 14px; font-size: 0.9rem; outline: none; width: 100%;
+    }
+    .save-input:focus { border-color: #00a835; }
+    .save-btn {
+      background: linear-gradient(135deg,#00a835,#008a2a);
+      color: #fff; border: none; border-radius: 10px; padding: 12px;
+      font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: all 0.2s;
+      box-shadow: 0 4px 15px rgba(0,168,53,0.3);
+    }
+    .save-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(0,168,53,0.4); }
+
+    /* ── CLIPS SIDEBAR ── */
+    .clips-sidebar {
+      background: #1a1a1a;
+      border-top: 2px solid #2a2a2a;
+      padding: 16px;
+    }
+    .clips-sidebar h6 { font-size: 0.85rem; font-weight: 700; color: #aaa; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .clip-card {
+      background: #222;
+      border: 1px solid #2a2a2a;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .clip-card:hover { border-color: #00a835; background: rgba(0,168,53,0.08); }
+    .clip-card.active-clip { border-color: #00a835; background: rgba(0,168,53,0.12); }
+    .clip-thumb { width: 48px; height: 36px; background: #333; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+    .clip-info { flex: 1; min-width: 0; }
+    .clip-info .clip-name { font-size: 0.85rem; font-weight: 600; color: #ddd; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .clip-info .clip-meta { font-size: 0.75rem; color: #555; margin-top: 2px; }
+    .clip-del { background: transparent; border: none; color: #444; font-size: 0.9rem; cursor: pointer; padding: 4px; border-radius: 4px; transition: color 0.2s; }
+    .clip-del:hover { color: #ff5555; }
+
+    /* ── NO PROJECT ── */
+    .no-project {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 60vh; text-align: center; color: #555; padding: 40px;
+    }
+    .no-project .np-icon { font-size: 4rem; margin-bottom: 20px; }
+    .no-project h4 { font-weight: 700; color: #777; margin-bottom: 10px; }
+
+    /* ── ALERT ── */
+    .editor-alert {
+      position: fixed; top: 70px; right: 20px; z-index: 9999;
+      min-width: 260px; border-radius: 12px; padding: 14px 18px;
+      font-weight: 600; font-size: 0.9rem;
+      animation: slideIn 0.3s ease;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    .editor-alert.success { background: #0a2a0a; border: 1px solid #00a835; color: #00cc50; }
+    .editor-alert.error { background: #2a0a0a; border: 1px solid #cc2222; color: #ff5555; }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    /* ── UPLOAD ZONE ── */
+    .upload-zone {
+      border: 2px dashed #333;
+      border-radius: 12px;
+      padding: 30px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #555;
+    }
+    .upload-zone:hover { border-color: #00a835; color: #00a835; background: rgba(0,168,53,0.05); }
+    .upload-zone .uz-icon { font-size: 2.5rem; margin-bottom: 10px; }
+
+    @media (max-width: 768px) {
+      .tool-tab { padding: 12px 14px; min-width: 60px; }
+      .slider-row label { min-width: 70px; font-size: 0.75rem; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg">
-  <div class="container">
-    <a class="navbar-brand" href="index.html">✂ CutLab</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
-      <span class="navbar-toggler-icon"></span>
+<!-- TOP BAR -->
+<div class="editor-topbar">
+  <div class="brand">
+    <div class="logo">✏</div>
+    EditPro
+  </div>
+  <div class="project-title-bar" id="projectNameBar">No project selected</div>
+  <a href="projects.html" style="color:#555; font-size:0.85rem; text-decoration:none;">← Projects</a>
+</div>
+
+<!-- ALERT -->
+<div id="editorAlert" style="display:none;" class="editor-alert"></div>
+
+<!-- NO PROJECT STATE -->
+<div id="noProject" class="no-project" style="display:none;">
+  <div class="np-icon">📁</div>
+  <h4>No Project Selected</h4>
+  <p style="margin-bottom:24px; font-size:0.9rem;">Open a project from the Projects page to start editing.</p>
+  <a href="projects.html" style="background:#00a835; color:#fff; padding:12px 28px; border-radius:10px; text-decoration:none; font-weight:700;">Go to Projects</a>
+</div>
+
+<!-- MAIN EDITOR -->
+<div id="mainEditor" style="display:none;">
+
+  <!-- VIDEO AREA -->
+  <div class="video-area" id="videoArea">
+    <div id="uploadZone" class="upload-zone" style="margin:20px; max-width:400px;" onclick="document.getElementById('videoUpload').click()">
+      <div class="uz-icon">🎬</div>
+      <div style="font-weight:700; margin-bottom:6px;">Tap to upload video</div>
+      <div style="font-size:0.8rem;">MP4, WebM, MOV supported</div>
+      <input type="file" id="videoUpload" accept="video/*" style="display:none"/>
+    </div>
+    <video id="videoPlayer" style="display:none;" playsinline></video>
+    <canvas id="overlayCanvas"></canvas>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="timeline-area" id="timelineArea" style="display:none;">
+    <div class="timeline-track" id="timelineTrack">
+      <div class="trim-region" id="trimRegion"></div>
+      <div class="timeline-progress" id="timelineProgress" style="width:0%"></div>
+      <div class="trim-start" id="trimStart">⬢</div>
+      <div class="trim-end" id="trimEnd">⬢</div>
+    </div>
+    <div class="time-display">
+      <span id="currentTimeDisplay">0:00</span>
+      <span id="trimInfo" style="color:#00a835; font-weight:600;"></span>
+      <span id="totalTimeDisplay">0:00</span>
+    </div>
+  </div>
+
+  <!-- PLAYBACK CONTROLS -->
+  <div class="playback-controls" id="playbackControls" style="display:none;">
+    <button class="ctrl-btn" onclick="skipTime(-5)">⏪ 5s</button>
+    <button class="ctrl-btn" onclick="setTrimStart()">[ Start</button>
+    <button class="play-btn" id="playBtn" onclick="togglePlay()">▶</button>
+    <button class="ctrl-btn" onclick="setTrimEnd()">End ]</button>
+    <button class="ctrl-btn" onclick="skipTime(5)">5s ⏩</button>
+  </div>
+
+  <!-- TOOL TABS -->
+  <div class="tool-tabs" id="toolTabs" style="display:none;">
+    <button class="tool-tab active" onclick="switchTab('trim', this)">
+      <span class="tab-icon">✂️</span>Trim
     </button>
-    <div class="collapse navbar-collapse" id="navMenu">
-      <div class="navbar-nav ms-auto">
-        <a class="nav-link" href="index.html">Home</a>
-        <a class="nav-link" href="projects.html">Projects</a>
-        <a class="nav-link active" href="editor.html">Editor</a>
-        <a class="nav-link" href="about.html">About</a>
+    <button class="tool-tab" onclick="switchTab('filters', this)">
+      <span class="tab-icon">🎨</span>Filters
+    </button>
+    <button class="tool-tab" onclick="switchTab('rotate', this)">
+      <span class="tab-icon">🔄</span>Rotate
+    </button>
+    <button class="tool-tab" onclick="switchTab('crop', this)">
+      <span class="tab-icon">⬛</span>Crop
+    </button>
+    <button class="tool-tab" onclick="switchTab('text', this)">
+      <span class="tab-icon">🔤</span>Text
+    </button>
+    <button class="tool-tab" onclick="switchTab('adjust', this)">
+      <span class="tab-icon">⚙️</span>Adjust
+    </button>
+    <button class="tool-tab" onclick="switchTab('save', this)">
+      <span class="tab-icon">💾</span>Save
+    </button>
+  </div>
+
+  <!-- TOOL PANELS -->
+  <div class="tool-panels" id="toolPanels" style="display:none;">
+
+    <!-- TRIM -->
+    <div class="tool-panel active" id="panel-trim">
+      <div class="panel-label">✂️ Trim Video</div>
+      <div class="trim-inputs">
+        <div class="trim-field">
+          <label>▶ Start Time (sec)</label>
+          <input type="number" id="trimStartInput" value="0" min="0" step="0.1" oninput="updateTrimFromInput()"/>
+        </div>
+        <div class="trim-field">
+          <label>⏹ End Time (sec)</label>
+          <input type="number" id="trimEndInput" value="0" min="0" step="0.1" oninput="updateTrimFromInput()"/>
+        </div>
+      </div>
+      <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="ctrl-btn" onclick="setTrimStart()" style="flex:1;">📍 Mark Start Here</button>
+        <button class="ctrl-btn" onclick="setTrimEnd()" style="flex:1;">🏁 Mark End Here</button>
+        <button class="ctrl-btn" onclick="previewTrim()" style="flex:1; color:#00a835;">▶ Preview Trim</button>
       </div>
     </div>
-  </div>
-</nav>
 
-<!-- PAGE HEADER -->
-<div class="page-header">
-  <div class="container">
-    <h1>✂ Video Editor</h1>
-    <p id="projectName">Open a project from the Projects page to start editing</p>
+    <!-- FILTERS -->
+    <div class="tool-panel" id="panel-filters">
+      <div class="panel-label">🎨 Visual Filters</div>
+      <div class="filter-grid">
+        <button class="filter-btn active" onclick="applyFilter('none', this)">
+          <span class="filter-icon">🎬</span>Original
+        </button>
+        <button class="filter-btn" onclick="applyFilter('grayscale(100%)', this)">
+          <span class="filter-icon">🖤</span>B&W
+        </button>
+        <button class="filter-btn" onclick="applyFilter('sepia(100%)', this)">
+          <span class="filter-icon">🟤</span>Sepia
+        </button>
+        <button class="filter-btn" onclick="applyFilter('invert(100%)', this)">
+          <span class="filter-icon">🔲</span>Invert
+        </button>
+        <button class="filter-btn" onclick="applyFilter('brightness(1.4) contrast(1.2)', this)">
+          <span class="filter-icon">☀️</span>Vivid
+        </button>
+        <button class="filter-btn" onclick="applyFilter('hue-rotate(90deg)', this)">
+          <span class="filter-icon">🟢</span>Cool
+        </button>
+        <button class="filter-btn" onclick="applyFilter('hue-rotate(180deg)', this)">
+          <span class="filter-icon">🔵</span>Teal
+        </button>
+        <button class="filter-btn" onclick="applyFilter('saturate(2) brightness(1.1)', this)">
+          <span class="filter-icon">🌈</span>Pop
+        </button>
+        <button class="filter-btn" onclick="applyFilter('blur(2px)', this)">
+          <span class="filter-icon">🌫️</span>Blur
+        </button>
+        <button class="filter-btn" onclick="applyFilter('contrast(2)', this)">
+          <span class="filter-icon">⚡</span>Sharp
+        </button>
+      </div>
+    </div>
+
+    <!-- ROTATE -->
+    <div class="tool-panel" id="panel-rotate">
+      <div class="panel-label">🔄 Rotate & Flip</div>
+      <div class="rotate-grid">
+        <button class="rotate-btn" onclick="rotateVideo(-90)">
+          <span class="r-icon">↺</span>Rotate Left
+        </button>
+        <button class="rotate-btn" onclick="rotateVideo(90)">
+          <span class="r-icon">↻</span>Rotate Right
+        </button>
+        <button class="rotate-btn" onclick="rotateVideo(180)">
+          <span class="r-icon">🔃</span>Flip 180°
+        </button>
+        <button class="rotate-btn" onclick="flipVideo('h')">
+          <span class="r-icon">↔️</span>Flip H
+        </button>
+        <button class="rotate-btn" onclick="flipVideo('v')">
+          <span class="r-icon">↕️</span>Flip V
+        </button>
+        <button class="rotate-btn" onclick="resetTransform()">
+          <span class="r-icon">🔁</span>Reset
+        </button>
+      </div>
+      <div style="margin-top:12px; font-size:0.8rem; color:#555;">
+        Current rotation: <span id="rotationDisplay" style="color:#00a835; font-weight:700;">0°</span>
+      </div>
+    </div>
+
+    <!-- CROP -->
+    <div class="tool-panel" id="panel-crop">
+      <div class="panel-label">⬛ Crop Aspect Ratio</div>
+      <div class="crop-grid">
+        <button class="crop-btn active" onclick="setCrop('none', this)">Original</button>
+        <button class="crop-btn" onclick="setCrop('16/9', this)">16:9</button>
+        <button class="crop-btn" onclick="setCrop('9/16', this)">9:16</button>
+        <button class="crop-btn" onclick="setCrop('1/1', this)">1:1</button>
+        <button class="crop-btn" onclick="setCrop('4/3', this)">4:3</button>
+        <button class="crop-btn" onclick="setCrop('3/4', this)">3:4</button>
+        <button class="crop-btn" onclick="setCrop('21/9', this)">21:9</button>
+      </div>
+      <div style="margin-top:12px; font-size:0.8rem; color:#555;">
+        Selected: <span id="cropDisplay" style="color:#00a835; font-weight:700;">Original</span>
+      </div>
+    </div>
+
+    <!-- TEXT -->
+    <div class="tool-panel" id="panel-text">
+      <div class="panel-label">🔤 Add Text Overlay</div>
+      <div class="text-controls">
+        <input type="text" class="text-input" id="textContent" placeholder="Type your text here..."/>
+        <div class="text-row">
+          <div style="flex:1;">
+            <div style="font-size:0.75rem; color:#666; margin-bottom:6px;">Font Size</div>
+            <input type="number" class="font-size-input" id="textSize" value="36" min="12" max="120"/>
+          </div>
+          <div>
+            <div style="font-size:0.75rem; color:#666; margin-bottom:6px;">Text Color</div>
+            <input type="color" class="color-pick" id="textColor" value="#ffffff"/>
+          </div>
+          <div>
+            <div style="font-size:0.75rem; color:#666; margin-bottom:6px;">Stroke Color</div>
+            <input type="color" class="color-pick" id="strokeColor" value="#000000"/>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:0.75rem; color:#666; margin-bottom:6px;">Stroke Size</div>
+            <input type="number" class="font-size-input" id="strokeSize" value="2" min="0" max="20"/>
+          </div>
+        </div>
+        <div class="slider-row">
+          <label>Position X</label>
+          <input type="range" class="tool-slider" id="textX" min="0" max="100" value="50" oninput="drawTextOverlay()"/>
+          <span class="slider-val" id="textXVal">50%</span>
+        </div>
+        <div class="slider-row">
+          <label>Position Y</label>
+          <input type="range" class="tool-slider" id="textY" min="0" max="100" value="85" oninput="drawTextOverlay()"/>
+          <span class="slider-val" id="textYVal">85%</span>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button class="ctrl-btn" style="flex:1;" onclick="drawTextOverlay()">👁 Preview Text</button>
+          <button class="ctrl-btn" style="flex:1; color:#ff5555;" onclick="clearText()">✕ Clear Text</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADJUST -->
+    <div class="tool-panel" id="panel-adjust">
+      <div class="panel-label">⚙️ Adjust Settings</div>
+      <div class="slider-row">
+        <label>Brightness</label>
+        <input type="range" class="tool-slider" id="brightness" min="0" max="200" value="100" oninput="applyAdjustments()"/>
+        <span class="slider-val" id="brightnessVal">100</span>
+      </div>
+      <div class="slider-row">
+        <label>Contrast</label>
+        <input type="range" class="tool-slider" id="contrast" min="0" max="200" value="100" oninput="applyAdjustments()"/>
+        <span class="slider-val" id="contrastVal">100</span>
+      </div>
+      <div class="slider-row">
+        <label>Saturation</label>
+        <input type="range" class="tool-slider" id="saturation" min="0" max="200" value="100" oninput="applyAdjustments()"/>
+        <span class="slider-val" id="saturationVal">100</span>
+      </div>
+      <div class="slider-row">
+        <label>Blur</label>
+        <input type="range" class="tool-slider" id="blurAmount" min="0" max="10" value="0" step="0.1" oninput="applyAdjustments()"/>
+        <span class="slider-val" id="blurVal">0</span>
+      </div>
+      <button class="ctrl-btn" style="width:100%; margin-top:4px;" onclick="resetAdjustments()">🔁 Reset All</button>
+    </div>
+
+    <!-- SAVE -->
+    <div class="tool-panel" id="panel-save">
+      <div class="panel-label">💾 Save Clip</div>
+      <div class="save-form">
+        <input type="text" class="save-input" id="clipName" placeholder="Clip name e.g. Opening Scene"/>
+        <textarea class="save-input" id="clipNotes" rows="2" placeholder="Add notes..."></textarea>
+        <button class="save-btn" onclick="saveClip()">💾 Save Clip to Project</button>
+      </div>
+    </div>
+
   </div>
+
+  <!-- CLIPS LIST -->
+  <div class="clips-sidebar">
+    <h6>🗂 Saved Clips <span id="clipCount" style="color:#555; font-weight:400;">(0)</span></h6>
+    <div id="clipsList">
+      <div style="text-align:center; color:#444; padding:20px; font-size:0.85rem;">No clips saved yet</div>
+    </div>
+  </div>
+
 </div>
-
-<div class="container py-4">
-  <div id="alertBox"></div>
-
-  <!-- NO PROJECT WARNING -->
-  <div id="noProjectWarning" style="display:none;" class="mb-4">
-    <div class="card text-center py-5">
-      <div style="font-size:3rem; margin-bottom:16px;">📁</div>
-      <h5 style="font-weight:700; margin-bottom:8px;">No Project Selected</h5>
-      <p style="color:#666; margin-bottom:20px;">Please open a project from the Projects page first.</p>
-      <div><a href="projects.html" class="btn-red">Go to Projects</a></div>
-    </div>
-  </div>
-
-  <div id="editorContent" style="display:none;">
-    <div class="row g-4">
-
-      <!-- LEFT: Video Player -->
-      <div class="col-lg-8">
-
-        <!-- Upload -->
-        <div class="card mb-4">
-          <h5 style="font-weight:700; margin-bottom:16px;">🎬 Video Player</h5>
-          <div class="mb-3">
-            <label class="form-label">Upload Video File</label>
-            <input type="file" id="videoUpload" class="form-control" accept="video/*"/>
-          </div>
-          <video id="videoPlayer" controls>
-            <source src="" type="video/mp4"/>
-          </video>
-
-          <!-- Time Controls -->
-          <div class="row mt-4 g-3">
-            <div class="col-6">
-              <label class="form-label">⏱ Start Time (seconds)</label>
-              <input type="number" id="startTime" class="form-control" value="0" min="0" step="0.1"/>
-            </div>
-            <div class="col-6">
-              <label class="form-label">⏱ End Time (seconds)</label>
-              <input type="number" id="endTime" class="form-control" value="0" min="0" step="0.1"/>
-            </div>
-          </div>
-
-          <!-- Controls -->
-          <div class="mt-3 d-flex gap-2 flex-wrap">
-            <button class="btn-outline-red" style="font-size:0.85rem; padding:8px 16px;" onclick="setStart()">📍 Set Start</button>
-            <button class="btn-outline-red" style="font-size:0.85rem; padding:8px 16px;" onclick="setEnd()">🏁 Set End</button>
-            <button class="btn-outline-red" style="font-size:0.85rem; padding:8px 16px;" onclick="previewClip()">▶ Preview Clip</button>
-          </div>
-        </div>
-
-        <!-- Save Clip -->
-        <div class="card">
-          <h5 style="font-weight:700; margin-bottom:16px;">💾 Save This Clip</h5>
-          <div class="mb-3">
-            <label class="form-label">Clip Name</label>
-            <input type="text" id="clipName" class="form-control" placeholder="e.g. Opening Scene"/>
-          </div>
-          <div class="mb-4">
-            <label class="form-label">Notes</label>
-            <textarea id="clipNotes" class="form-control" rows="3" placeholder="Add editing notes..."></textarea>
-          </div>
-          <button class="btn-red" onclick="saveClip()" style="width:100%; justify-content:center;">
-            💾 Save Clip to Project
-          </button>
-        </div>
-      </div>
-
-      <!-- RIGHT: Clips List -->
-      <div class="col-lg-4">
-        <div class="card" style="position:sticky; top:80px;">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 style="font-weight:700; margin:0;">🗂 Saved Clips</h5>
-            <span id="clipCount" style="color:#666; font-size:0.85rem;">0 clips</span>
-          </div>
-          <div id="clipsList">
-            <div class="empty-state" style="padding:40px 20px;">
-              <div class="empty-icon">✂️</div>
-              <p>No clips saved yet</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<footer class="site-footer">
-  <div class="container">✂ <strong>CutLab</strong> — Video Editing Tool | Node.js + Express</div>
-</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-const video = document.getElementById('videoPlayer');
+// ── STATE ──
 let projectId = null;
+let rotation = 0;
+let scaleX = 1, scaleY = 1;
+let currentFilter = 'none';
+let trimStartSec = 0, trimEndSec = 0;
+let isDraggingStart = false, isDraggingEnd = false;
+let textOverlay = { text:'', x:50, y:85, size:36, color:'#ffffff', stroke:'#000000', strokeSize:2 };
+let currentClipVideo = null;
 
+const video = document.getElementById('videoPlayer');
+const canvas = document.getElementById('overlayCanvas');
+const ctx = canvas.getContext('2d');
+
+// ── INIT ──
 window.onload = () => {
   const params = new URLSearchParams(window.location.search);
   projectId = params.get('id');
-
   if (!projectId) {
-    document.getElementById('noProjectWarning').style.display = 'block';
+    document.getElementById('noProject').style.display = 'flex';
     return;
   }
-
-  document.getElementById('editorContent').style.display = 'block';
-
+  document.getElementById('mainEditor').style.display = 'block';
   fetch(`/api/projects/${projectId}`)
     .then(r => r.json())
     .then(res => {
-      if (res.success) {
-        document.getElementById('projectName').textContent = '📁 ' + res.data.title;
-      }
+      if (res.success) document.getElementById('projectNameBar').textContent = '📁 ' + res.data.title;
     });
-
   loadClips();
 };
 
+// ── VIDEO UPLOAD ──
 document.getElementById('videoUpload').addEventListener('change', function() {
   const file = this.files[0];
-  if (file) {
-    video.src = URL.createObjectURL(file);
-    video.load();
-  }
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  video.src = url;
+  video.style.display = 'block';
+  document.getElementById('uploadZone').style.display = 'none';
+  document.getElementById('timelineArea').style.display = 'block';
+  document.getElementById('playbackControls').style.display = 'flex';
+  document.getElementById('toolTabs').style.display = 'flex';
+  document.getElementById('toolPanels').style.display = 'block';
+
+  video.onloadedmetadata = () => {
+    trimStartSec = 0;
+    trimEndSec = video.duration;
+    document.getElementById('trimStartInput').value = 0;
+    document.getElementById('trimEndInput').value = video.duration.toFixed(1);
+    document.getElementById('totalTimeDisplay').textContent = formatTime(video.duration);
+    updateTrimHandles();
+    resizeCanvas();
+  };
+  video.ontimeupdate = updateTimeline;
 });
 
-function setStart() {
-  document.getElementById('startTime').value = video.currentTime.toFixed(1);
+// ── CANVAS RESIZE ──
+function resizeCanvas() {
+  canvas.width = video.offsetWidth;
+  canvas.height = video.offsetHeight;
+  drawTextOverlay();
+}
+window.addEventListener('resize', resizeCanvas);
+
+// ── PLAY/PAUSE ──
+function togglePlay() {
+  if (video.paused) {
+    video.play();
+    document.getElementById('playBtn').textContent = '⏸';
+  } else {
+    video.pause();
+    document.getElementById('playBtn').textContent = '▶';
+  }
+}
+video.addEventListener('ended', () => { document.getElementById('playBtn').textContent = '▶'; });
+
+function skipTime(s) { video.currentTime = Math.max(0, Math.min(video.duration, video.currentTime + s)); }
+
+// ── TIMELINE ──
+function updateTimeline() {
+  if (!video.duration) return;
+  const pct = (video.currentTime / video.duration) * 100;
+  document.getElementById('timelineProgress').style.width = pct + '%';
+  document.getElementById('currentTimeDisplay').textContent = formatTime(video.currentTime);
 }
 
-function setEnd() {
-  document.getElementById('endTime').value = video.currentTime.toFixed(1);
+document.getElementById('timelineTrack').addEventListener('click', function(e) {
+  const rect = this.getBoundingClientRect();
+  const pct = (e.clientX - rect.left) / rect.width;
+  video.currentTime = pct * video.duration;
+});
+
+// ── TRIM HANDLES DRAG ──
+function setupTrimDrag(el, isStart) {
+  el.addEventListener('mousedown', startDrag);
+  el.addEventListener('touchstart', startDrag, {passive: true});
+
+  function startDrag(e) {
+    e.stopPropagation();
+    if (isStart) isDraggingStart = true; else isDraggingEnd = true;
+    document.addEventListener('mousemove', onDrag);
+    document.addEventListener('touchmove', onDrag, {passive: true});
+    document.addEventListener('mouseup', stopDrag);
+    document.addEventListener('touchend', stopDrag);
+  }
+  function onDrag(e) {
+    const track = document.getElementById('timelineTrack');
+    const rect = track.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    let pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    const time = pct * video.duration;
+    if (isStart) {
+      trimStartSec = Math.min(time, trimEndSec - 0.5);
+      document.getElementById('trimStartInput').value = trimStartSec.toFixed(1);
+    } else {
+      trimEndSec = Math.max(time, trimStartSec + 0.5);
+      document.getElementById('trimEndInput').value = trimEndSec.toFixed(1);
+    }
+    updateTrimHandles();
+  }
+  function stopDrag() {
+    isDraggingStart = false; isDraggingEnd = false;
+    document.removeEventListener('mousemove', onDrag);
+    document.removeEventListener('touchmove', onDrag);
+    document.removeEventListener('mouseup', stopDrag);
+    document.removeEventListener('touchend', stopDrag);
+  }
+}
+setupTrimDrag(document.getElementById('trimStart'), true);
+setupTrimDrag(document.getElementById('trimEnd'), false);
+
+function updateTrimHandles() {
+  if (!video.duration) return;
+  const startPct = (trimStartSec / video.duration) * 100;
+  const endPct = (trimEndSec / video.duration) * 100;
+  document.getElementById('trimStart').style.left = startPct + '%';
+  document.getElementById('trimEnd').style.left = endPct + '%';
+  document.getElementById('trimRegion').style.left = startPct + '%';
+  document.getElementById('trimRegion').style.width = (endPct - startPct) + '%';
+  document.getElementById('trimInfo').textContent = `${formatTime(trimStartSec)} → ${formatTime(trimEndSec)}`;
 }
 
-function previewClip() {
-  const start = parseFloat(document.getElementById('startTime').value);
-  const end = parseFloat(document.getElementById('endTime').value);
-  if (end <= start) { showAlert('End time must be after start time!', 'danger'); return; }
-  video.currentTime = start;
+function updateTrimFromInput() {
+  trimStartSec = parseFloat(document.getElementById('trimStartInput').value) || 0;
+  trimEndSec = parseFloat(document.getElementById('trimEndInput').value) || video.duration;
+  updateTrimHandles();
+}
+
+function setTrimStart() {
+  trimStartSec = video.currentTime;
+  document.getElementById('trimStartInput').value = trimStartSec.toFixed(1);
+  updateTrimHandles();
+  showAlert('▶ Start point set at ' + formatTime(trimStartSec), 'success');
+}
+function setTrimEnd() {
+  trimEndSec = video.currentTime;
+  document.getElementById('trimEndInput').value = trimEndSec.toFixed(1);
+  updateTrimHandles();
+  showAlert('⏹ End point set at ' + formatTime(trimEndSec), 'success');
+}
+function previewTrim() {
+  video.currentTime = trimStartSec;
   video.play();
+  document.getElementById('playBtn').textContent = '⏸';
   const stop = setInterval(() => {
-    if (video.currentTime >= end) { video.pause(); clearInterval(stop); }
-  }, 200);
+    if (video.currentTime >= trimEndSec) { video.pause(); document.getElementById('playBtn').textContent = '▶'; clearInterval(stop); }
+  }, 100);
 }
 
+// ── FILTERS ──
+function applyFilter(filter, btn) {
+  currentFilter = filter;
+  applyAdjustments();
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+
+// ── ADJUST ──
+function applyAdjustments() {
+  const b = document.getElementById('brightness').value;
+  const c = document.getElementById('contrast').value;
+  const s = document.getElementById('saturation').value;
+  const bl = document.getElementById('blurAmount').value;
+  document.getElementById('brightnessVal').textContent = b;
+  document.getElementById('contrastVal').textContent = c;
+  document.getElementById('saturationVal').textContent = s;
+  document.getElementById('blurVal').textContent = bl;
+  let f = `brightness(${b}%) contrast(${c}%) saturate(${s}%) blur(${bl}px)`;
+  if (currentFilter !== 'none') f += ' ' + currentFilter;
+  video.style.filter = f;
+}
+function resetAdjustments() {
+  document.getElementById('brightness').value = 100;
+  document.getElementById('contrast').value = 100;
+  document.getElementById('saturation').value = 100;
+  document.getElementById('blurAmount').value = 0;
+  applyAdjustments();
+}
+
+// ── ROTATE ──
+function rotateVideo(deg) {
+  rotation = (rotation + deg) % 360;
+  applyTransform();
+  document.getElementById('rotationDisplay').textContent = rotation + '°';
+}
+function flipVideo(axis) {
+  if (axis === 'h') scaleX *= -1;
+  else scaleY *= -1;
+  applyTransform();
+}
+function resetTransform() {
+  rotation = 0; scaleX = 1; scaleY = 1;
+  applyTransform();
+  document.getElementById('rotationDisplay').textContent = '0°';
+}
+function applyTransform() {
+  video.style.transform = `rotate(${rotation}deg) scaleX(${scaleX}) scaleY(${scaleY})`;
+}
+
+// ── CROP ──
+function setCrop(ratio, btn) {
+  document.querySelectorAll('.crop-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('cropDisplay').textContent = btn.textContent;
+  if (ratio === 'none') {
+    video.style.aspectRatio = '';
+    document.getElementById('videoArea').style.aspectRatio = '';
+  } else {
+    video.style.aspectRatio = ratio;
+    document.getElementById('videoArea').style.aspectRatio = ratio;
+  }
+}
+
+// ── TEXT OVERLAY ──
+function drawTextOverlay() {
+  const text = document.getElementById('textContent').value;
+  const size = parseInt(document.getElementById('textSize').value) || 36;
+  const color = document.getElementById('textColor').value;
+  const stroke = document.getElementById('strokeColor').value;
+  const strokeSz = parseInt(document.getElementById('strokeSize').value) || 0;
+  const xPct = document.getElementById('textX').value;
+  const yPct = document.getElementById('textY').value;
+  document.getElementById('textXVal').textContent = xPct + '%';
+  document.getElementById('textYVal').textContent = yPct + '%';
+
+  canvas.width = video.offsetWidth || 300;
+  canvas.height = video.offsetHeight || 200;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  if (!text) return;
+  const x = (xPct / 100) * canvas.width;
+  const y = (yPct / 100) * canvas.height;
+
+  ctx.font = `bold ${size}px Inter, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  if (strokeSz > 0) {
+    ctx.strokeStyle = stroke;
+    ctx.lineWidth = strokeSz * 2;
+    ctx.strokeText(text, x, y);
+  }
+  ctx.fillStyle = color;
+  ctx.fillText(text, x, y);
+
+  textOverlay = { text, x: xPct, y: yPct, size, color, stroke, strokeSize: strokeSz };
+}
+function clearText() {
+  document.getElementById('textContent').value = '';
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+// ── SAVE CLIP ──
 function saveClip() {
-  if (!projectId) { showAlert('Please open a project first!', 'danger'); return; }
-  const name = document.getElementById('clipName').value || 'Untitled Clip';
-  const startTime = document.getElementById('startTime').value;
-  const endTime = document.getElementById('endTime').value;
+  if (!projectId) { showAlert('No project selected!', 'error'); return; }
+  const name = document.getElementById('clipName').value.trim() || 'Untitled Clip';
   const notes = document.getElementById('clipNotes').value;
   const videoFile = document.getElementById('videoUpload').files[0];
-  if (!videoFile) { showAlert('Please upload a video first!', 'danger'); return; }
+  if (!videoFile) { showAlert('Please upload a video first!', 'error'); return; }
 
   const formData = new FormData();
   formData.append('name', name);
-  formData.append('startTime', startTime);
-  formData.append('endTime', endTime);
+  formData.append('startTime', trimStartSec.toFixed(1));
+  formData.append('endTime', trimEndSec.toFixed(1));
   formData.append('notes', notes);
+  formData.append('rotation', rotation);
+  formData.append('filter', currentFilter);
+  formData.append('textOverlay', JSON.stringify(textOverlay));
   formData.append('video', videoFile);
+
+  showAlert('Saving clip...', 'success');
 
   fetch(`/api/projects/${projectId}/clips`, { method: 'POST', body: formData })
     .then(r => r.json())
     .then(res => {
       if (res.success) {
-        showAlert('✅ Clip saved successfully!', 'success');
+        showAlert('✅ Clip saved!', 'success');
         document.getElementById('clipName').value = '';
         document.getElementById('clipNotes').value = '';
         loadClips();
+      } else {
+        showAlert('❌ Save failed!', 'error');
       }
-    });
+    })
+    .catch(() => showAlert('❌ Save failed!', 'error'));
 }
 
+// ── LOAD CLIPS ── (FIXED: now loads video when clicking clip)
 function loadClips() {
   if (!projectId) return;
   fetch(`/api/projects/${projectId}/clips`)
     .then(r => r.json())
     .then(res => {
       const list = document.getElementById('clipsList');
-      const count = document.getElementById('clipCount');
-      count.textContent = `${res.data.length} clip${res.data.length !== 1 ? 's' : ''}`;
-      if (res.data.length === 0) {
-        list.innerHTML = `<div class="empty-state" style="padding:40px 20px;"><div class="empty-icon">✂️</div><p>No clips saved yet</p></div>`;
+      document.getElementById('clipCount').textContent = `(${res.data.length})`;
+      if (!res.data.length) {
+        list.innerHTML = '<div style="text-align:center;color:#444;padding:20px;font-size:0.85rem;">No clips saved yet</div>';
         return;
       }
       list.innerHTML = res.data.map(c => `
-        <div class="clip-item">
-          <h6>${c.name}</h6>
-          <span class="clip-time">⏱ ${c.startTime}s → ${c.endTime}s</span>
-          <div class="clip-notes">${c.notes || 'No notes'}</div>
-          <button onclick="deleteClip('${c._id}')" style="margin-top:10px; background:transparent; border:1px solid #333; color:#666; padding:5px 12px; border-radius:8px; font-size:0.78rem; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.borderColor='#e50914';this.style.color='#e50914'" onmouseout="this.style.borderColor='#333';this.style.color='#666'">🗑 Delete</button>
+        <div class="clip-card" onclick="loadClip('${c._id}','${c.videoFile}',${c.startTime},${c.endTime})" id="clipcard-${c._id}">
+          <div class="clip-thumb">🎬</div>
+          <div class="clip-info">
+            <div class="clip-name">${c.name}</div>
+            <div class="clip-meta">⏱ ${formatTime(c.startTime)} → ${formatTime(c.endTime)} · ${c.notes ? c.notes.substring(0,30) : 'No notes'}</div>
+          </div>
+          <button class="clip-del" onclick="event.stopPropagation(); deleteClip('${c._id}')">🗑</button>
         </div>
       `).join('');
     });
 }
 
+// ── LOAD CLIP INTO PLAYER (FIX for saved clips not opening) ──
+function loadClip(id, videoFile, start, end) {
+  document.querySelectorAll('.clip-card').forEach(c => c.classList.remove('active-clip'));
+  const card = document.getElementById('clipcard-' + id);
+  if (card) card.classList.add('active-clip');
+
+  if (videoFile) {
+    video.src = videoFile;
+    video.style.display = 'block';
+    document.getElementById('uploadZone').style.display = 'none';
+    document.getElementById('timelineArea').style.display = 'block';
+    document.getElementById('playbackControls').style.display = 'flex';
+    document.getElementById('toolTabs').style.display = 'flex';
+    document.getElementById('toolPanels').style.display = 'block';
+
+    video.onloadedmetadata = () => {
+      trimStartSec = start;
+      trimEndSec = end;
+      document.getElementById('trimStartInput').value = start;
+      document.getElementById('trimEndInput').value = end;
+      document.getElementById('totalTimeDisplay').textContent = formatTime(video.duration);
+      video.currentTime = start;
+      updateTrimHandles();
+      resizeCanvas();
+      showAlert('✅ Clip loaded!', 'success');
+    };
+    video.load();
+  } else {
+    showAlert('No video file attached to this clip.', 'error');
+  }
+}
+
+// ── DELETE CLIP ──
 function deleteClip(id) {
   if (!confirm('Delete this clip?')) return;
   fetch(`/api/clips/${id}`, { method: 'DELETE' })
-    .then(() => { showAlert('Clip deleted!', 'danger'); loadClips(); });
+    .then(() => { showAlert('🗑 Clip deleted', 'error'); loadClips(); });
+}
+
+// ── SWITCH TABS ──
+function switchTab(name, btn) {
+  document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tool-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── HELPERS ──
+function formatTime(s) {
+  if (isNaN(s)) return '0:00';
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return `${m}:${sec.toString().padStart(2,'0')}`;
 }
 
 function showAlert(msg, type) {
-  const box = document.getElementById('alertBox');
-  box.innerHTML = `<div class="alert alert-${type} alert-dismissible">${msg}
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>`;
-  setTimeout(() => box.innerHTML = '', 3000);
+  const el = document.getElementById('editorAlert');
+  el.textContent = msg;
+  el.className = 'editor-alert ' + type;
+  el.style.display = 'block';
+  clearTimeout(el._t);
+  el._t = setTimeout(() => { el.style.display = 'none'; }, 3000);
 }
 </script>
 </body>
